@@ -31,7 +31,7 @@ jobs:
         run: composer validate
 
       - name: Install Composer dependencies
-        run: composer update --no-interaction --no-progress --prefer-dist -vvv
+        run: composer install --no-interaction --no-progress --prefer-dist --ignore-platform-reqs
 
       - name: Run full test pipeline
         run: composer test
