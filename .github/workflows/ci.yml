@@ -11,6 +11,8 @@ jobs:
   test:
     name: Composer Test (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
+    env:
+      APP_KEY: base64:3pxlA4t05qwrkiqvjo04/rnk331vBH92uoMyfKvnUZU=
     strategy:
       fail-fast: false
       matrix:
