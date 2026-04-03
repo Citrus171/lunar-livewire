@@ -27,16 +27,10 @@ jobs:
           coverage: xdebug
           tools: composer:v2
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.composer/cache/files
-          key: ${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-${{ matrix.php }}-composer-
-
       - name: Install Composer dependencies
-        run: composer update --no-interaction --no-progress --prefer-dist
+        run: composer install --no-dev --no-interaction --no-progress --prefer-dist
+        env:
+          COMPOSER_NO_INTERACTION: '1'
 
       - name: Run full test pipeline
         run: composer test
