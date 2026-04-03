@@ -36,7 +36,7 @@
         "pestphp/pest": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0",
         "pestphp/pest-plugin-type-coverage": "^3.0",
-        "phpunit/phpunit": "^12.5",
+        "phpunit/phpunit": "^11.0",
         "rector/rector": "^2.3",
         "spatie/laravel-ignition": "^2.0"
     },
