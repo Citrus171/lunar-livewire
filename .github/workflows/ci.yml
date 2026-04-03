@@ -75,7 +75,7 @@ jobs:
         run: |
           mkdir -p database
           touch database/database.sqlite
-          php artisan migrate --seed --force
+          php artisan migrate --force
 
       - name: Run E2E tests
         run: npm run test:e2e
