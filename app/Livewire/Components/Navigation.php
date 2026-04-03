@@ -3,6 +3,8 @@
 namespace App\Livewire\Components;
 
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Lunar\Models\Collection;
 
@@ -10,24 +12,15 @@ class Navigation extends Component
 {
     /**
      * The search term for the search input.
-     *
-     * @var string
      */
+    #[Url]
     public ?string $term = null;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @var array<string, string>
-     */
-    protected array $queryString = [
-        'term',
-    ];
 
     /**
      * Return the collections in a tree.
      */
-    public function getCollectionsProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function collections(): \Illuminate\Support\Collection
     {
         return Collection::with(['defaultUrl'])->get()->toTree();
     }

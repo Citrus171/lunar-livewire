@@ -28,8 +28,8 @@ it('adds item to cart when stock is sufficient', function (): void {
         ->for(Product::factory())
         ->create(['stock' => 10]);
 
-    $cart = \Mockery::mock(Cart::class);
-    $cart->shouldReceive('add')->once()->with(\Mockery::type(ProductVariant::class), 2);
+    $cart = Mockery::mock(Cart::class);
+    $cart->shouldReceive('add')->once()->with(Mockery::type(ProductVariant::class), 2);
 
     CartSession::shouldReceive('manager')->andReturn($cart);
 

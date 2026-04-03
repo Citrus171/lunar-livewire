@@ -12,15 +12,14 @@ class CollectionSeeder extends AbstractSeeder
 {
     /**
      * Run the database seeds.
-     *
      */
     public function run(): void
     {
         $collections = $this->getSeedData('collections');
 
-        $collectionGroup = CollectionGroup::first();
+        $collectionGroup = CollectionGroup::query()->first();
 
-        DB::transaction(function () use ($collections, $collectionGroup) {
+        DB::transaction(function () use ($collections, $collectionGroup): void {
             foreach ($collections as $collection) {
                 Collection::create([
                     'collection_group_id' => $collectionGroup->id,

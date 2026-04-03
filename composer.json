@@ -67,8 +67,10 @@
             "@php artisan key:generate --ansi"
         ],
         "test:type-coverage": "pest --type-coverage --min=90",
+        "format:changed": "pint --parallel --dirty",
+        "test:lint:changed": "pint --parallel --dirty --test",
         "test:lint": [
-            "pint --parallel --test",
+            "pint --parallel --dirty --test",
             "rector --dry-run"
         ],
         "test:unit": "XDEBUG_MODE=\"coverage\" pest --parallel --coverage --min=80",

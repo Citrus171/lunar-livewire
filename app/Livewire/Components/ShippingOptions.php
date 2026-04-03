@@ -4,9 +4,12 @@ namespace App\Livewire\Components;
 
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\CartSession;
 use Lunar\Facades\ShippingManifest;
+use Lunar\Models\CartAddress;
 
 class ShippingOptions extends Component
 {
@@ -18,9 +21,7 @@ class ShippingOptions extends Component
     public function mount(): void
     {
         if ($shippingOption = $this->shippingAddress?->shipping_option) {
-            $option = $this->shippingOptions->first(function (\Lunar\DataTypes\ShippingOption $opt) use ($shippingOption): bool {
-                return $opt->getIdentifier() == $shippingOption;
-            });
+            $option = $this->shippingOptions->first(fn (ShippingOption $opt): bool => $opt->getIdentifier() === $shippingOption);
             $this->chosenOption = $option?->getIdentifier();
         }
     }
@@ -28,7 +29,8 @@ class ShippingOptions extends Component
     /**
      * Return available shipping options.
      */
-    public function getShippingOptionsProperty(): Collection
+    #[Computed]
+    public function shippingOptions(): Collection
     {
         return ShippingManifest::getOptions(
             CartSession::current()
@@ -49,7 +51,7 @@ class ShippingOptions extends Component
     {
         $this->validate();
 
-        $option = $this->shippingOptions->first(fn (\Lunar\DataTypes\ShippingOption $option) => $option->getIdentifier() == $this->chosenOption);
+        $option = $this->shippingOptions->first(fn (ShippingOption $option): bool => $option->getIdentifier() === $this->chosenOption);
 
         CartSession::setShippingOption($option);
 
@@ -59,7 +61,8 @@ class ShippingOptions extends Component
     /**
      * Return whether we have a shipping address.
      */
-    public function getShippingAddressProperty(): ?\Lunar\Models\CartAddress
+    #[Computed]
+    public function shippingAddress(): ?CartAddress
     {
         return CartSession::getCart()->shippingAddress;
     }

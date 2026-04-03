@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Product;
 use App\Modifiers\ShippingModifier;
+use Filament\Panel;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Base\ShippingModifiers;
+use Lunar\Facades\ModelManifest;
 use Lunar\Shipping\ShippingPlugin;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         LunarPanel::panel(
-            fn (\Filament\Panel $panel) => $panel->plugins([
+            fn (Panel $panel): Panel => $panel->plugins([
                 new ShippingPlugin,
             ])
         )
@@ -32,9 +35,9 @@ class AppServiceProvider extends ServiceProvider
             ShippingModifier::class
         );
 
-        \Lunar\Facades\ModelManifest::replace(
+        ModelManifest::replace(
             \Lunar\Models\Contracts\Product::class,
-            \App\Models\Product::class,
+            Product::class,
             // \App\Models\CustomProduct::class,
         );
     }

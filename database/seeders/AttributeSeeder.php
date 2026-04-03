@@ -10,17 +10,16 @@ class AttributeSeeder extends AbstractSeeder
 {
     /**
      * Run the database seeds.
-     *
      */
     public function run(): void
     {
         $attributes = $this->getSeedData('attributes');
 
-        $attributeGroup = AttributeGroup::first();
+        $attributeGroup = AttributeGroup::query()->first();
 
-        DB::transaction(function () use ($attributes, $attributeGroup) {
+        DB::transaction(function () use ($attributes, $attributeGroup): void {
             foreach ($attributes as $attribute) {
-                Attribute::create([
+                Attribute::query()->create([
                     'attribute_group_id' => $attributeGroup->id,
                     'attribute_type' => $attribute->attribute_type,
                     'handle' => $attribute->handle,

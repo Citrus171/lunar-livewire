@@ -12,11 +12,10 @@ class CustomerSeeder extends AbstractSeeder
 {
     /**
      * Run the database seeds.
-     *
      */
     public function run(): void
     {
-        DB::transaction(function () {
+        DB::transaction(function (): void {
             $faker = Factory::create();
             $customers = Customer::factory(100)->create();
 

@@ -14,8 +14,8 @@ it('renders search page', function (): void {
 it('returns paginated search results', function (): void {
     $component = Livewire::test(SearchPage::class);
 
-    expect($component->instance()->getResultsProperty())
+    expect($component->instance()->results())
         ->toBeInstanceOf(LengthAwarePaginator::class)
-        ->and($component->instance()->getResultsProperty()->perPage())
+        ->and($component->instance()->results()->perPage())
         ->toBe(50);
 });

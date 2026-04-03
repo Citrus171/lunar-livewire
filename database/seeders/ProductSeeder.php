@@ -20,39 +20,36 @@ use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
-use App\Jobs\GenerateVariants;
 
 class ProductSeeder extends AbstractSeeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run(): void
     {
         $products = $this->getSeedData('products');
 
-        $attributes = Attribute::get();
+        $attributes = Attribute::query()->get();
 
-        $productType = ProductType::first();
+        $productType = ProductType::query()->first();
 
         $taxClass = TaxClass::getDefault();
 
         $currency = Currency::getDefault();
 
-        $collections = Collection::get();
+        $collections = Collection::query()->get();
 
-        $language = Language::getDefault();
+        Language::getDefault();
 
-        DB::transaction(function () use ($products, $attributes, $productType, $taxClass, $currency, $collections) {
-            $products->each(function ($product) use ($attributes, $productType, $taxClass, $currency, $collections) {
+        DB::transaction(function () use ($products, $attributes, $productType, $taxClass, $currency, $collections): void {
+            $products->each(function ($product) use ($attributes, $productType, $taxClass, $currency, $collections): void {
                 $attributeData = [];
 
                 foreach ($product->attributes as $attributeHandle => $value) {
-                    $attribute = $attributes->first(fn ($att) => $att->handle == $attributeHandle);
+                    $attribute = $attributes->first(fn ($att): bool => $att->handle === $attributeHandle);
 
-                    if ($attribute->type == TranslatedText::class) {
+                    if ($attribute->type === TranslatedText::class) {
                         $attributeData[$attributeHandle] = new TranslatedText([
                             'en' => new Text($value),
                         ]);
@@ -60,23 +57,23 @@ class ProductSeeder extends AbstractSeeder
                         continue;
                     }
 
-                    if ($attribute->type == ListField::class) {
+                    if ($attribute->type === ListField::class) {
                         $attributeData[$attributeHandle] = new ListField((array) $value);
                     }
                 }
 
-                $brand = Brand::firstOrCreate([
+                $brand = Brand::query()->firstOrCreate([
                     'name' => $product->brand,
                 ]);
 
-                $productModel = Product::create([
+                $productModel = Product::query()->create([
                     'attribute_data' => $attributeData,
                     'product_type_id' => $productType->id,
                     'status' => 'published',
                     'brand_id' => $brand->id,
                 ]);
 
-                $variant = ProductVariant::create([
+                $variant = ProductVariant::query()->create([
                     'product_id' => $productModel->id,
                     'purchasable' => 'always',
                     'shippable' => true,
@@ -86,8 +83,8 @@ class ProductSeeder extends AbstractSeeder
                     'stock' => 500,
                 ]);
 
-                if (!count($product->options ?? [])) {
-                    Price::create([
+                if (count($product->options ?? []) === 0) {
+                    Price::query()->create([
                         'customer_group_id' => null,
                         'currency_id' => $currency->id,
                         'priceable_type' => (new ProductVariant)->getMorphClass(),
@@ -98,42 +95,40 @@ class ProductSeeder extends AbstractSeeder
                 }
 
                 $media = $productModel->addMedia(
-                    base_path("database/seeders/data/images/{$product->image}")
+                    base_path('database/seeders/data/images/'.$product->image)
                 )->preservingOriginal()->toMediaCollection('images');
 
                 $media->setCustomProperty('primary', true);
                 $media->save();
 
-                $collections->each(function ($coll) use ($product, $productModel) {
-                    if (in_array(strtolower($coll->translateAttribute('name')), $product->collections)) {
+                $collections->each(function ($coll) use ($product, $productModel): void {
+                    if (in_array(strtolower((string) $coll->translateAttribute('name')), $product->collections, true)) {
                         $coll->products()->attach($productModel->id);
                     }
                 });
 
-                if (! count($product->options ?? [])) {
+                if (count($product->options ?? []) === 0) {
                     return;
                 }
 
-                $options = ProductOption::get();
+                $options = ProductOption::query()->get();
 
-                $optionValues = ProductOptionValue::get();
+                $optionValues = ProductOptionValue::query()->get();
 
                 $optionValueMapping = collect($product->options)->mapWithKeys(
-                    function ($option) {
-                        return [
-                            $option->name => $option->values
-                        ];
-                    }
+                    fn ($option): array => [
+                        $option->name => $option->values,
+                    ]
                 )->toArray();
 
                 $optionIds = [];
 
                 foreach ($product->options ?? [] as $optionIndex => $option) {
                     // Do we have this option already?
-                    $optionModel = $options->first(fn ($opt) => $option->name == $opt->translate('name'));
+                    $optionModel = $options->first(fn ($opt): bool => $option->name === $opt->translate('name'));
 
                     if (! $optionModel) {
-                        $optionModel = ProductOption::create([
+                        $optionModel = ProductOption::query()->create([
                             'name' => [
                                 'en' => $option->name,
                             ],
@@ -146,14 +141,14 @@ class ProductSeeder extends AbstractSeeder
                     }
 
                     $optionIds[$optionModel->id] = [
-                        'position' => $optionIndex + 1
+                        'position' => $optionIndex + 1,
                     ];
 
                     foreach ($option->values as $value) {
-                        $valueModel = $optionValues->first(fn ($val) => $value == $val->translate('name'));
+                        $valueModel = $optionValues->first(fn ($val): bool => $value === $val->translate('name'));
 
                         if (! $valueModel) {
-                            ProductOptionValue::create([
+                            ProductOptionValue::query()->create([
                                 'product_option_id' => $optionModel->id,
                                 'position' => $optionIndex,
 
@@ -165,26 +160,24 @@ class ProductSeeder extends AbstractSeeder
                     }
                 }
 
-                if (! count($product->options ?? [])) {
+                if (count($product->options ?? []) === 0) {
                     return;
                 }
 
                 $productModel->productOptions()->sync($optionIds);
 
-                $variants = collect([$variant])->map(function ($variant) use ($product) {
-                    return [
-                        'id' => $variant->id,
-                        'sku' => $variant->sku,
-                        'price' => $product->price,
-                        'values' => [],
-                    ];
-                })->toArray();
+                $variants = collect([$variant])->map(fn ($variant): array => [
+                    'id' => $variant->id,
+                    'sku' => $variant->sku,
+                    'price' => $product->price,
+                    'values' => [],
+                ])->all();
 
                 $variants = MapVariantsToProductOptions::map($optionValueMapping, $variants, true);
 
                 foreach ($variants as $variant) {
-                    if (!$variant['variant_id']) {
-                        $variantModel = ProductVariant::create([
+                    if (! $variant['variant_id']) {
+                        $variantModel = ProductVariant::query()->create([
                             'product_id' => $productModel->id,
                             'purchasable' => 'always',
                             'shippable' => true,
@@ -195,10 +188,10 @@ class ProductSeeder extends AbstractSeeder
                         ]);
                         $variant['variant_id'] = $variantModel->id;
                     } else {
-                        $variantModel = ProductVariant::find($variant['variant_id']);
+                        $variantModel = ProductVariant::query()->find($variant['variant_id']);
                     }
 
-                    Price::create([
+                    Price::query()->create([
                         'customer_group_id' => null,
                         'currency_id' => $currency->id,
                         'priceable_type' => (new ProductVariant)->getMorphClass(),
@@ -207,9 +200,7 @@ class ProductSeeder extends AbstractSeeder
                         'min_quantity' => 1,
                     ]);
 
-                    $valueIds = ProductOptionValue::get()->filter(function ($option) use ($variant) {
-                        return in_array($option->translate('name'), $variant['values']);
-                    })->pluck('id');
+                    $valueIds = ProductOptionValue::query()->get()->filter(fn ($option): bool => in_array($option->translate('name'), $variant['values'], true))->pluck('id');
 
                     $variantModel->values()->sync($valueIds);
                 }

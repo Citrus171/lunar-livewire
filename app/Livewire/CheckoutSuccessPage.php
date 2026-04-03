@@ -10,7 +10,7 @@ use Lunar\Models\Order;
 
 class CheckoutSuccessPage extends Component
 {
-    public ?Cart $cart;
+    public ?Cart $cart = null;
 
     public Order $order;
 
@@ -22,6 +22,7 @@ class CheckoutSuccessPage extends Component
 
             return;
         }
+
         $this->order = $this->cart->completedOrder;
 
         CartSession::forget();

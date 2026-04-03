@@ -21,13 +21,12 @@ class OrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
      */
     public function run(): void
     {
-        DB::transaction(function () {
-            $variants = ProductVariant::get();
-            $users = User::get();
+        DB::transaction(function (): void {
+            $variants = ProductVariant::query()->get();
+            $users = User::query()->get();
             $faker = Factory::create();
             $channel = Channel::getDefault();
             $currency = Currency::getDefault();
@@ -35,7 +34,7 @@ class OrderSeeder extends Seeder
             $cardTypes = ['visa', 'mastercard'];
 
             for ($i = 0; $i < 201; $i++) {
-                $generator = app(OrderReferenceGenerator::class);
+                $generator = resolve(OrderReferenceGenerator::class);
 
                 $itemModels = $variants->shuffle()->take($faker->numberBetween(1, 15));
 
@@ -44,7 +43,7 @@ class OrderSeeder extends Seeder
                 foreach ($itemModels as $variant) {
                     $quantity = $faker->numberBetween(1, 10);
 
-                    $pricing = Pricing::for($variant, $quantity)->get();
+                    $pricing = Pricing::for($variant)->get();
                     $price = $pricing->matched->price->value;
                     $subTotal = $price * $quantity;
                     $tax = (int) ($subTotal * .2);

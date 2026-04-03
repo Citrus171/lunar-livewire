@@ -2,9 +2,13 @@
 
 namespace App\Livewire;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
+use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\CartSession;
 use Lunar\Facades\Payments;
 use Lunar\Facades\ShippingManifest;
@@ -17,7 +21,7 @@ class CheckoutPage extends Component
     /**
      * The Cart instance.
      */
-    public ?Cart $cart;
+    public ?Cart $cart = null;
 
     /**
      * The shipping address instance.
@@ -67,15 +71,11 @@ class CheckoutPage extends Component
         'selectedShippingOption' => 'refreshCart',
     ];
 
+    #[Url]
     public ?string $payment_intent = null;
 
+    #[Url]
     public ?string $payment_intent_client_secret = null;
-
-    /** @var array<string, string> */
-    protected array $queryString = [
-        'payment_intent',
-        'payment_intent_client_secret',
-    ];
 
     /**
      * {@inheritDoc}
@@ -107,7 +107,7 @@ class CheckoutPage extends Component
             ])->authorize();
 
             if ($payment->success) {
-                redirect()->route('checkout-success.view');
+                to_route('checkout-success.view');
 
                 return;
             }
@@ -175,7 +175,8 @@ class CheckoutPage extends Component
     /**
      * Return the shipping option.
      */
-    public function getShippingOptionProperty(): ?\Lunar\DataTypes\ShippingOption
+    #[Computed]
+    public function shippingOption(): ?ShippingOption
     {
         $shippingAddress = $this->cart->shippingAddress;
 
@@ -184,9 +185,7 @@ class CheckoutPage extends Component
         }
 
         if ($option = $shippingAddress->shipping_option) {
-            return ShippingManifest::getOptions($this->cart)->first(function (\Lunar\DataTypes\ShippingOption $opt) use ($option): bool {
-                return $opt->getIdentifier() == $option;
-            });
+            return ShippingManifest::getOptions($this->cart)->first(fn (ShippingOption $opt): bool => $opt->getIdentifier() === $option);
         }
 
         return null;
@@ -203,12 +202,12 @@ class CheckoutPage extends Component
 
         $address = $this->{$type};
 
-        if ($type == 'billing') {
+        if ($type === 'billing') {
             $this->cart->setBillingAddress($address);
             $this->billing = $this->cart->billingAddress;
         }
 
-        if ($type == 'shipping') {
+        if ($type === 'shipping') {
             $this->cart->setShippingAddress($address);
             $this->shipping = $this->cart->shippingAddress;
 
@@ -236,7 +235,7 @@ class CheckoutPage extends Component
      */
     public function saveShippingOption(): void
     {
-        $option = $this->shippingOptions->first(fn (\Lunar\DataTypes\ShippingOption $option) => $option->getIdentifier() == $this->chosenShipping);
+        $option = $this->shippingOptions->first(fn (ShippingOption $option): bool => $option->getIdentifier() === $this->chosenShipping);
 
         CartSession::setShippingOption($option);
 
@@ -245,7 +244,7 @@ class CheckoutPage extends Component
         $this->determineCheckoutStep();
     }
 
-    public function checkout(): ?\Illuminate\Http\RedirectResponse
+    public function checkout(): ?RedirectResponse
     {
         $payment = Payments::cart($this->cart)->withData([
             'payment_intent_client_secret' => $this->payment_intent_client_secret,
@@ -253,26 +252,28 @@ class CheckoutPage extends Component
         ])->authorize();
 
         if ($payment->success) {
-            redirect()->route('checkout-success.view');
+            to_route('checkout-success.view');
 
             return null;
         }
 
-        return redirect()->route('checkout-success.view');
+        return to_route('checkout-success.view');
     }
 
     /**
      * Return the available countries.
      */
-    public function getCountriesProperty(): Collection
+    #[Computed]
+    public function countries(): Collection
     {
-        return Country::whereIn('iso3', ['GBR', 'USA'])->get();
+        return Country::query()->whereIn('iso3', ['GBR', 'USA'])->get();
     }
 
     /**
      * Return available shipping options.
      */
-    public function getShippingOptionsProperty(): Collection
+    #[Computed]
+    public function shippingOptions(): Collection
     {
         return ShippingManifest::getOptions(
             $this->cart
@@ -285,19 +286,19 @@ class CheckoutPage extends Component
     protected function getAddressValidation(string $type): array
     {
         return [
-            "{$type}.first_name" => 'required',
-            "{$type}.last_name" => 'required',
-            "{$type}.line_one" => 'required',
-            "{$type}.country_id" => 'required',
-            "{$type}.city" => 'required',
-            "{$type}.postcode" => 'required',
-            "{$type}.company_name" => 'nullable',
-            "{$type}.line_two" => 'nullable',
-            "{$type}.line_three" => 'nullable',
-            "{$type}.state" => 'nullable',
-            "{$type}.delivery_instructions" => 'nullable',
-            "{$type}.contact_email" => 'required|email',
-            "{$type}.contact_phone" => 'nullable',
+            $type.'.first_name' => 'required',
+            $type.'.last_name' => 'required',
+            $type.'.line_one' => 'required',
+            $type.'.country_id' => 'required',
+            $type.'.city' => 'required',
+            $type.'.postcode' => 'required',
+            $type.'.company_name' => 'nullable',
+            $type.'.line_two' => 'nullable',
+            $type.'.line_three' => 'nullable',
+            $type.'.state' => 'nullable',
+            $type.'.delivery_instructions' => 'nullable',
+            $type.'.contact_email' => 'required|email',
+            $type.'.contact_phone' => 'nullable',
         ];
     }
 

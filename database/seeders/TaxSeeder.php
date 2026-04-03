@@ -13,13 +13,12 @@ class TaxSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
      */
     public function run(): void
     {
-        $taxClass = TaxClass::first();
+        $taxClass = TaxClass::query()->first();
 
-        $ukCountry = Country::firstWhere('iso3', 'GBR');
+        $ukCountry = Country::query()->firstWhere('iso3', 'GBR');
 
         $ukTaxZone = TaxZone::factory()->create([
             'name' => 'UK',

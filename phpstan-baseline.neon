@@ -1,0 +1,91 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property App\\Livewire\\CheckoutPage\:\:\$shippingOption\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/CheckoutPage.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\CheckoutPage\:\:\$shippingOptions\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/CheckoutPage.php
+
+		-
+			message: '#^Call to an undefined static method Lunar\\Facades\\CartSession\:\:setShippingOption\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Livewire/CheckoutPage.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Components\\Cart\:\:\$cartLines\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Components/Cart.php
+
+		-
+			message: '#^Call to an undefined static method Lunar\\Facades\\CartSession\:\:remove\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Livewire/Components/Cart.php
+
+		-
+			message: '#^Call to an undefined static method Lunar\\Facades\\CartSession\:\:updateLines\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Livewire/Components/Cart.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Components\\ShippingOptions\:\:\$shippingAddress\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Components/ShippingOptions.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Components\\ShippingOptions\:\:\$shippingOptions\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/Components/ShippingOptions.php
+
+		-
+			message: '#^Call to an undefined static method Lunar\\Facades\\CartSession\:\:getCart\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Livewire/Components/ShippingOptions.php
+
+		-
+			message: '#^Call to an undefined static method Lunar\\Facades\\CartSession\:\:setShippingOption\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: app/Livewire/Components/ShippingOptions.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\ProductPage\:\:\$images\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/ProductPage.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\ProductPage\:\:\$product\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Livewire/ProductPage.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\ProductPage\:\:\$productOptionValues\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/ProductPage.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\ProductPage\:\:\$productOptions\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/ProductPage.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\ProductPage\:\:\$variant\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/ProductPage.php

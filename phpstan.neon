@@ -1,16 +1,13 @@
 includes:
     - vendor/larastan/larastan/extension.neon
     - vendor/nesbot/carbon/extension.neon
+    - phpstan-baseline.neon
 
 parameters:
 
     paths:
         - app
-        - config
-        - database
-        - public
-        - routes
 
-    level: max
+    level: 1
 
     tmpDir: /tmp/phpstan

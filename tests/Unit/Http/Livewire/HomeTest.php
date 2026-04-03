@@ -17,9 +17,9 @@ it('mounts home component', function (): void {
 });
 
 it('returns null sale collection images when sale collection does not exist', function (): void {
-    $home = app(Home::class);
+    $home = resolve(Home::class);
 
-    expect($home->getSaleCollectionImagesProperty())->toBeNull();
+    expect($home->saleCollectionImages())->toBeNull();
 });
 
 it('returns chunked sale collection images when sale collection exists', function (): void {
@@ -42,7 +42,7 @@ it('returns chunked sale collection images when sale collection exists', functio
         )
         ->create();
 
-    $images = app(Home::class)->getSaleCollectionImagesProperty();
+    $images = resolve(Home::class)->saleCollectionImages();
 
     expect($images)
         ->not()->toBeNull()
@@ -67,7 +67,7 @@ it('does not return sale collection as random collection', function (): void {
         ])
         ->create();
 
-    $random = app(Home::class)->getRandomCollectionProperty();
+    $random = resolve(Home::class)->randomCollection();
 
     expect($random)->not()->toBeNull()
         ->and($random?->id)->toBe($other->id);

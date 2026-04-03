@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use App\Traits\FetchesUrls;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Lunar\Models\Collection as CollectionModel;
 
@@ -24,15 +24,14 @@ class CollectionPage extends Component
             ]
         );
 
-        if (! $this->url) {
-            abort(404);
-        }
+        abort_unless($this->url, 404);
     }
 
     /**
      * Computed property to return the collection.
      */
-    public function getCollectionProperty(): mixed
+    #[Computed]
+    public function collection(): mixed
     {
         return $this->url->element;
     }

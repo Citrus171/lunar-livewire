@@ -4,8 +4,10 @@ namespace App\Livewire\Components;
 
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Lunar\Facades\CartSession;
+use Lunar\Models\CartLine;
 
 class Cart extends Component
 {
@@ -35,7 +37,8 @@ class Cart extends Component
     /**
      * Get the current cart instance.
      */
-    public function getCartProperty(): ?\Lunar\Models\Cart
+    #[Computed]
+    public function cart(): ?\Lunar\Models\Cart
     {
         return CartSession::current();
     }
@@ -43,7 +46,8 @@ class Cart extends Component
     /**
      * Return the cart lines from the cart.
      */
-    public function getCartLinesProperty(): Collection
+    #[Computed]
+    public function cartLines(): Collection
     {
         return $this->cart->lines ?? collect();
     }
@@ -76,19 +80,17 @@ class Cart extends Component
      */
     public function mapLines(): void
     {
-        $this->lines = $this->cartLines->map(function (\Lunar\Models\CartLine $line) {
-            return [
-                'id' => $line->id,
-                'identifier' => $line->purchasable->getIdentifier(),
-                'quantity' => $line->quantity,
-                'description' => $line->purchasable->getDescription(),
-                'thumbnail' => $line->purchasable->getThumbnail()?->getUrl(),
-                'option' => $line->purchasable->getOption(),
-                'options' => $line->purchasable->getOptions()->implode(' / '),
-                'sub_total' => $line->subTotal->formatted(),
-                'unit_price' => $line->unitPrice->formatted(),
-            ];
-        })->toArray();
+        $this->lines = $this->cartLines->map(fn (CartLine $line): array => [
+            'id' => $line->id,
+            'identifier' => $line->purchasable->getIdentifier(),
+            'quantity' => $line->quantity,
+            'description' => $line->purchasable->getDescription(),
+            'thumbnail' => $line->purchasable->getThumbnail()?->getUrl(),
+            'option' => $line->purchasable->getOption(),
+            'options' => $line->purchasable->getOptions()->implode(' / '),
+            'sub_total' => $line->subTotal->formatted(),
+            'unit_price' => $line->unitPrice->formatted(),
+        ])->toArray();
     }
 
     public function handleAddToCart(): void

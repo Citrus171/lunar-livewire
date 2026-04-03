@@ -10,7 +10,10 @@ use Lunar\Base\Traits\LunarUser;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, LunarUser, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use LunarUser;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,9 +39,12 @@ class User extends Authenticatable
     /**
      * The attributes that should be cast.
      *
-     * @var array<string, string>
+     * @return array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+        ];
+    }
 }

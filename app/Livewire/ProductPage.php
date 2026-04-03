@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Traits\FetchesUrls;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
@@ -32,32 +33,28 @@ class ProductPage extends Component
             ]
         );
 
-        if (! $this->url) {
-            abort(404);
-        }
+        abort_unless($this->url, 404);
 
-        $this->selectedOptionValues = $this->productOptions->mapWithKeys(function (array $data) {
-            return [$data['option']->id => $data['values']->first()->id];
-        })->toArray();
+        $this->selectedOptionValues = $this->productOptions->mapWithKeys(fn (array $data): array => [$data['option']->id => $data['values']->first()->id])->toArray();
     }
 
     /**
      * Computed property to get variant.
      */
-    public function getVariantProperty(): ProductVariant
+    #[Computed]
+    public function variant(): ProductVariant
     {
-        return $this->product->variants->first(function (ProductVariant $variant) {
-            return ! $variant->values->pluck('id')
-                ->diff(
-                    collect($this->selectedOptionValues)->values()
-                )->count();
-        });
+        return $this->product->variants->first(fn (ProductVariant $variant): bool => ! $variant->values->pluck('id')
+            ->diff(
+                collect($this->selectedOptionValues)->values()
+            )->count());
     }
 
     /**
      * Computed property to return all available option values.
      */
-    public function getProductOptionValuesProperty(): Collection
+    #[Computed]
+    public function productOptionValues(): Collection
     {
         return $this->product->variants->pluck('values')->flatten();
     }
@@ -65,21 +62,21 @@ class ProductPage extends Component
     /**
      * Computed propert to get available product options with values.
      */
-    public function getProductOptionsProperty(): Collection
+    #[Computed]
+    public function productOptions(): Collection
     {
         return $this->productOptionValues->unique('id')->groupBy('product_option_id')
-            ->map(function (\Illuminate\Support\Collection $values) {
-                return [
-                    'option' => $values->first()->option,
-                    'values' => $values,
-                ];
-            })->values();
+            ->map(fn (Collection $values): array => [
+                'option' => $values->first()->option,
+                'values' => $values,
+            ])->values();
     }
 
     /**
      * Computed property to return product.
      */
-    public function getProductProperty(): Product
+    #[Computed]
+    public function product(): Product
     {
         return $this->url->element;
     }
@@ -87,7 +84,8 @@ class ProductPage extends Component
     /**
      * Return all images for the product.
      */
-    public function getImagesProperty(): Collection
+    #[Computed]
+    public function images(): Collection
     {
         return $this->product->media->sortBy('order_column');
     }
@@ -95,13 +93,14 @@ class ProductPage extends Component
     /**
      * Computed property to return current image.
      */
-    public function getImageProperty(): ?Media
+    #[Computed]
+    public function image(): ?Media
     {
-        if (count($this->variant->images)) {
+        if (count($this->variant->images) > 0) {
             return $this->variant->images->first();
         }
 
-        if ($primary = $this->images->first(fn (\Spatie\MediaLibrary\MediaCollections\Models\Media $media) => $media->getCustomProperty('primary'))) {
+        if ($primary = $this->images->first(fn (Media $media): mixed => $media->getCustomProperty('primary'))) {
             return $primary;
         }
 

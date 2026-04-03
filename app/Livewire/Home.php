@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Lunar\Models\Collection;
+use Lunar\Models\Product;
 use Lunar\Models\Url;
 
 class Home extends Component
@@ -12,7 +14,8 @@ class Home extends Component
     /**
      * Return the sale collection.
      */
-    public function getSaleCollectionProperty(): Collection | null
+    #[Computed]
+    public function saleCollection(): ?Collection
     {
         return Url::whereElementType((new Collection)->getMorphClass())->whereSlug('sale')->first()?->element ?? null;
     }
@@ -20,18 +23,17 @@ class Home extends Component
     /**
      * Return all images in sale collection.
      */
-    public function getSaleCollectionImagesProperty(): ?\Illuminate\Support\Collection
+    #[Computed]
+    public function saleCollectionImages(): ?\Illuminate\Support\Collection
     {
-        if (! $this->getSaleCollectionProperty()) {
+        if (! $this->saleCollection() instanceof Collection) {
             return null;
         }
 
-        $collectionProducts = $this->getSaleCollectionProperty()
+        $collectionProducts = $this->saleCollection()
             ->products()->inRandomOrder()->limit(4)->get();
 
-        $saleImages = $collectionProducts->map(function (\Lunar\Models\Product $product) {
-            return $product->thumbnail;
-        });
+        $saleImages = $collectionProducts->map(fn (Product $product) => $product->thumbnail);
 
         return $saleImages->chunk(2);
     }
@@ -39,12 +41,13 @@ class Home extends Component
     /**
      * Return a random collection.
      */
-    public function getRandomCollectionProperty(): ?Collection
+    #[Computed]
+    public function randomCollection(): ?Collection
     {
         $collections = Url::whereElementType((new Collection)->getMorphClass());
 
-        if ($this->getSaleCollectionProperty()) {
-            $collections = $collections->where('element_id', '!=', $this->getSaleCollectionProperty()?->id);
+        if ($this->saleCollection() instanceof Collection) {
+            $collections = $collections->where('element_id', '!=', $this->saleCollection()?->id);
         }
 
         return $collections->inRandomOrder()->first()?->element;

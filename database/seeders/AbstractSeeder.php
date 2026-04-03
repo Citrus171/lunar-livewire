@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\File;
 
 abstract class AbstractSeeder extends Seeder
 {
-    protected function getSeedData($file): Collection
+    protected function getSeedData(string $file): Collection
     {
         return collect(json_decode(
             File::get(
-                base_path("database/seeders/data/{$file}.json")
+                base_path(sprintf('database/seeders/data/%s.json', $file))
             )
         ));
     }

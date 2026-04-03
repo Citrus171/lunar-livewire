@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Components;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Lunar\Facades\CartSession;
 use Lunar\Models\Cart;
@@ -44,10 +46,10 @@ class CheckoutAddress extends Component
     {
         $this->cart = CartSession::current();
 
-        $this->address = $this->cart->addresses->first(fn (CartAddress $add) => $add->type == $this->type) ?: new CartAddress;
+        $this->address = $this->cart->addresses->first(fn (CartAddress $add): bool => $add->type === $this->type) ?: new CartAddress;
 
         // If we have an existing ID then it should already be valid and ready to go.
-        $this->editing = (bool) ! $this->address->id;
+        $this->editing = ! $this->address->id;
     }
 
     public function rules(): array
@@ -76,11 +78,11 @@ class CheckoutAddress extends Component
     {
         $validatedData = $this->validate();
 
-        if ($this->type == 'billing') {
+        if ($this->type === 'billing') {
             $this->cart->setBillingAddress($this->address);
         }
 
-        if ($this->type == 'shipping') {
+        if ($this->type === 'shipping') {
             $this->cart->setShippingAddress($this->address);
             if ($this->shippingIsBilling) {
                 // Do we already have a billing address?
@@ -109,9 +111,10 @@ class CheckoutAddress extends Component
         }
     }
 
-    public function getCountriesProperty(): \Illuminate\Database\Eloquent\Collection
+    #[Computed]
+    public function countries(): Collection
     {
-        return Country::whereIn('iso3', ['GBR', 'USA'])->get();
+        return Country::query()->whereIn('iso3', ['GBR', 'USA'])->get();
     }
 
     public function render(): View

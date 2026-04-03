@@ -13,10 +13,6 @@ trait FetchesUrls
 
     /**
      * Fetch a url model.
-     *
-     * @param  string  $slug
-     * @param  string  $type
-     * @param  array  $eagerLoad
      */
     public function fetchUrl(string $slug, string $type, array $eagerLoad = []): ?Url
     {
