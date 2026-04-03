@@ -76,6 +76,9 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
           php artisan migrate --force
+          php artisan lunar:import:address-data --no-interaction
+          php artisan db:seed --class=Database\\Seeders\\LunarBaselineSeeder --force
+          php artisan db:seed --force
 
       - name: Run E2E tests
         run: npm run test:e2e
