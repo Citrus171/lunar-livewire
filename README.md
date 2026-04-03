@@ -32,3 +32,26 @@ The demo store will be available to `http://localhost` in your browser.
 Once the project is prepared, the Lunar panel will start and available to `http://localhost/lunar`. 
 
 Default admin user is username `admin@lunarphp.io` and password `password`
+
+## Frontend E2E tests (Playwright)
+
+Install browser binaries once:
+
+```bash
+npx playwright install --with-deps chromium
+```
+
+Run tests:
+
+```bash
+npm run test:e2e
+```
+
+Useful commands:
+
+```bash
+npm test
+npm run test:e2e:headed
+npm run test:e2e:ui
+npm run test:e2e:report
+```

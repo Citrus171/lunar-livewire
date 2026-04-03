@@ -29,3 +29,5 @@ public/build
 meilisearch/
 /.phpunit.cache
 .phpunit.cache/test-results
+playwright-report/
+test-results/
