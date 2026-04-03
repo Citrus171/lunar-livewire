@@ -20,7 +20,7 @@ class Home extends Component
     /**
      * Return all images in sale collection.
      */
-    public function getSaleCollectionImagesProperty()
+    public function getSaleCollectionImagesProperty(): ?\Illuminate\Support\Collection
     {
         if (! $this->getSaleCollectionProperty()) {
             return null;
@@ -29,7 +29,7 @@ class Home extends Component
         $collectionProducts = $this->getSaleCollectionProperty()
             ->products()->inRandomOrder()->limit(4)->get();
 
-        $saleImages = $collectionProducts->map(function ($product) {
+        $saleImages = $collectionProducts->map(function (\Lunar\Models\Product $product) {
             return $product->thumbnail;
         });
 

@@ -13,19 +13,21 @@ class Navigation extends Component
      *
      * @var string
      */
-    public $term = null;
+    public ?string $term = null;
 
     /**
      * {@inheritDoc}
+     *
+     * @var array<string, string>
      */
-    protected $queryString = [
+    protected array $queryString = [
         'term',
     ];
 
     /**
      * Return the collections in a tree.
      */
-    public function getCollectionsProperty()
+    public function getCollectionsProperty(): \Illuminate\Support\Collection
     {
         return Collection::with(['defaultUrl'])->get()->toTree();
     }

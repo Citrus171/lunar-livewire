@@ -19,7 +19,7 @@ class ProductPage extends Component
      */
     public array $selectedOptionValues = [];
 
-    public function mount($slug): void
+    public function mount(string $slug): void
     {
         $this->url = $this->fetchUrl(
             $slug,
@@ -36,7 +36,7 @@ class ProductPage extends Component
             abort(404);
         }
 
-        $this->selectedOptionValues = $this->productOptions->mapWithKeys(function ($data) {
+        $this->selectedOptionValues = $this->productOptions->mapWithKeys(function (array $data) {
             return [$data['option']->id => $data['values']->first()->id];
         })->toArray();
     }
@@ -46,7 +46,7 @@ class ProductPage extends Component
      */
     public function getVariantProperty(): ProductVariant
     {
-        return $this->product->variants->first(function ($variant) {
+        return $this->product->variants->first(function (ProductVariant $variant) {
             return ! $variant->values->pluck('id')
                 ->diff(
                     collect($this->selectedOptionValues)->values()
@@ -68,7 +68,7 @@ class ProductPage extends Component
     public function getProductOptionsProperty(): Collection
     {
         return $this->productOptionValues->unique('id')->groupBy('product_option_id')
-            ->map(function ($values) {
+            ->map(function (\Illuminate\Support\Collection $values) {
                 return [
                     'option' => $values->first()->option,
                     'values' => $values,
@@ -101,7 +101,7 @@ class ProductPage extends Component
             return $this->variant->images->first();
         }
 
-        if ($primary = $this->images->first(fn ($media) => $media->getCustomProperty('primary'))) {
+        if ($primary = $this->images->first(fn (\Spatie\MediaLibrary\MediaCollections\Models\Media $media) => $media->getCustomProperty('primary'))) {
             return $primary;
         }
 

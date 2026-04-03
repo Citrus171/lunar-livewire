@@ -18,7 +18,7 @@ trait FetchesUrls
      * @param  string  $type
      * @param  array  $eagerLoad
      */
-    public function fetchUrl($slug, $type, $eagerLoad = []): ?Url
+    public function fetchUrl(string $slug, string $type, array $eagerLoad = []): ?Url
     {
         return Url::whereElementType($type)
             ->whereDefault(true)

@@ -1,24 +1,10 @@
 <?php
 
-namespace Tests\Feature\Http\Livewire;
+declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-
-class HomeTest extends TestCase
-{
-    use RefreshDatabase;
-
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $this->get('/')
-            ->assertStatus(200)
-            ->assertSeeLivewire('home')
-            ->assertSeeLivewire('components.navigation');
-    }
-}
+it('renders home page with livewire components', function (): void {
+    $this->get('/')
+        ->assertStatus(200)
+        ->assertSeeLivewire('home')
+        ->assertSeeLivewire('components.navigation');
+});

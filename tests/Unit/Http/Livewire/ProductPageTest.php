@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Unit\Http\Livewire;
+declare(strict_types=1);
 
 use App\Livewire\ProductPage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Livewire\Livewire;
 use Lunar\Models\Currency;
@@ -11,110 +10,65 @@ use Lunar\Models\Language;
 use Lunar\Models\Price;
 use Lunar\Models\Product;
 use Lunar\Models\ProductVariant;
-use Tests\TestCase;
 
-class ProductPageTest extends TestCase
-{
-    use RefreshDatabase;
+it('mounts product page component', function (): void {
+    Language::factory()->create(['default' => true]);
 
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function test_component_can_mount()
-    {
-        Language::factory()->create([
-            'default' => true,
-        ]);
+    $currency = Currency::factory()->create(['default' => true]);
 
-        $currency = Currency::factory()->create([
-            'default' => true,
-        ]);
+    $product = Product::factory()
+        ->hasUrls(1, ['default' => true])
+        ->has(ProductVariant::factory()->afterCreating(function ($variant) use ($currency): void {
+            $variant->prices()->create(
+                Price::factory()->make(['currency_id' => $currency->id])->getAttributes()
+            );
+        }), 'variants')
+        ->create();
 
-        $product = Product::factory()
-            ->hasUrls(1, [
-                'default' => true,
-            ])->has(ProductVariant::factory()->afterCreating(function ($variant) use ($currency) {
-                $variant->prices()->create(
-                    Price::factory()->make([
-                        'currency_id' => $currency->id,
-                    ])->getAttributes()
-                );
-            }), 'variants')
-            ->create();
+    $product->addMedia(UploadedFile::fake()->image('product.jpg'))->toMediaCollection('images');
 
-        $product->addMedia(UploadedFile::fake()->image('product.jpg'))->toMediaCollection('images');
+    Livewire::test(ProductPage::class, ['slug' => $product->defaultUrl->slug])
+        ->assertViewIs('livewire.product-page');
+});
 
-        Livewire::test(ProductPage::class, ['slug' => $product->defaultUrl->slug])
-            ->assertViewIs('livewire.product-page');
-    }
+it('loads the correct product', function (): void {
+    Language::factory()->create(['default' => true]);
 
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function test_correct_product_is_loaded()
-    {
-        Language::factory()->create([
-            'default' => true,
-        ]);
+    $currency = Currency::factory()->create(['default' => true]);
 
-        $currency = Currency::factory()->create([
-            'default' => true,
-        ]);
+    $product = Product::factory()
+        ->hasUrls(1, ['default' => true])
+        ->has(ProductVariant::factory()->afterCreating(function ($variant) use ($currency): void {
+            $variant->prices()->create(
+                Price::factory()->make(['currency_id' => $currency->id])->getAttributes()
+            );
+        }), 'variants')
+        ->create();
 
-        $product = Product::factory()
-            ->hasUrls(1, [
-                'default' => true,
-            ])->has(ProductVariant::factory()->afterCreating(function ($variant) use ($currency) {
-                $variant->prices()->create(
-                    Price::factory()->make([
-                        'currency_id' => $currency->id,
-                    ])->getAttributes()
-                );
-            }), 'variants')
-            ->create();
+    $product->addMedia(UploadedFile::fake()->image('product.jpg'))->toMediaCollection('images');
 
-        $product->addMedia(UploadedFile::fake()->image('product.jpg'))->toMediaCollection('images');
+    Livewire::test(ProductPage::class, ['slug' => $product->defaultUrl->slug])
+        ->assertViewIs('livewire.product-page')
+        ->assertSet('product.id', $product->id);
+});
 
-        Livewire::test(ProductPage::class, ['slug' => $product->defaultUrl->slug])
-            ->assertViewIs('livewire.product-page')
-            ->assertSet('product.id', $product->id);
-    }
+it('renders product name', function (): void {
+    Language::factory()->create(['default' => true]);
 
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function test_product_is_visible()
-    {
-        Language::factory()->create([
-            'default' => true,
-        ]);
+    $currency = Currency::factory()->create(['default' => true]);
 
-        $currency = Currency::factory()->create([
-            'default' => true,
-        ]);
+    $product = Product::factory()
+        ->hasUrls(1, ['default' => true])
+        ->has(ProductVariant::factory()->afterCreating(function ($variant) use ($currency): void {
+            $variant->prices()->create(
+                Price::factory()->make(['currency_id' => $currency->id])->getAttributes()
+            );
+        }), 'variants')
+        ->create();
 
-        $product = Product::factory()
-            ->hasUrls(1, [
-                'default' => true,
-            ])->has(ProductVariant::factory()->afterCreating(function ($variant) use ($currency) {
-                $variant->prices()->create(
-                    Price::factory()->make([
-                        'currency_id' => $currency->id,
-                    ])->getAttributes()
-                );
-            }), 'variants')
-            ->create();
+    $product->addMedia(UploadedFile::fake()->image('product.jpg'))->toMediaCollection('images');
 
-        $product->addMedia(UploadedFile::fake()->image('product.jpg'))->toMediaCollection('images');
-
-        Livewire::test(ProductPage::class, ['slug' => $product->defaultUrl->slug])
-            ->assertViewIs('livewire.product-page')
-            ->assertSee($product->translateAttribute('name'));
-    }
-}
+    Livewire::test(ProductPage::class, ['slug' => $product->defaultUrl->slug])
+        ->assertViewIs('livewire.product-page')
+        ->assertSee($product->translateAttribute('name'));
+});

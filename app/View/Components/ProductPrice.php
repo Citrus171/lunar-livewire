@@ -20,7 +20,7 @@ class ProductPrice extends Component
      *
      * @return void
      */
-    public function __construct($product = null, $variant = null)
+    public function __construct(mixed $product = null, mixed $variant = null)
     {
             $this->price = Pricing::for(
                 $variant ?: $product->variants->first()

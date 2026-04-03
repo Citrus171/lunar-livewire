@@ -18,7 +18,7 @@ class ShippingOptions extends Component
     public function mount(): void
     {
         if ($shippingOption = $this->shippingAddress?->shipping_option) {
-            $option = $this->shippingOptions->first(function ($opt) use ($shippingOption) {
+            $option = $this->shippingOptions->first(function (\Lunar\DataTypes\ShippingOption $opt) use ($shippingOption): bool {
                 return $opt->getIdentifier() == $shippingOption;
             });
             $this->chosenOption = $option?->getIdentifier();
@@ -49,7 +49,7 @@ class ShippingOptions extends Component
     {
         $this->validate();
 
-        $option = $this->shippingOptions->first(fn ($option) => $option->getIdentifier() == $this->chosenOption);
+        $option = $this->shippingOptions->first(fn (\Lunar\DataTypes\ShippingOption $option) => $option->getIdentifier() == $this->chosenOption);
 
         CartSession::setShippingOption($option);
 
@@ -59,7 +59,7 @@ class ShippingOptions extends Component
     /**
      * Return whether we have a shipping address.
      */
-    public function getShippingAddressProperty()
+    public function getShippingAddressProperty(): ?\Lunar\Models\CartAddress
     {
         return CartSession::getCart()->shippingAddress;
     }

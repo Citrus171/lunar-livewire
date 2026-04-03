@@ -42,7 +42,7 @@ class CheckoutPage extends Component
     /**
      * The chosen shipping option.
      */
-    public $chosenShipping = null;
+    public ?string $chosenShipping = null;
 
     /**
      * The checkout steps.
@@ -67,11 +67,12 @@ class CheckoutPage extends Component
         'selectedShippingOption' => 'refreshCart',
     ];
 
-    public $payment_intent = null;
+    public ?string $payment_intent = null;
 
-    public $payment_intent_client_secret = null;
+    public ?string $payment_intent_client_secret = null;
 
-    protected $queryString = [
+    /** @var array<string, string> */
+    protected array $queryString = [
         'payment_intent',
         'payment_intent_client_secret',
     ];
@@ -174,16 +175,16 @@ class CheckoutPage extends Component
     /**
      * Return the shipping option.
      */
-    public function getShippingOptionProperty()
+    public function getShippingOptionProperty(): ?\Lunar\DataTypes\ShippingOption
     {
         $shippingAddress = $this->cart->shippingAddress;
 
         if (! $shippingAddress) {
-            return;
+            return null;
         }
 
         if ($option = $shippingAddress->shipping_option) {
-            return ShippingManifest::getOptions($this->cart)->first(function ($opt) use ($option) {
+            return ShippingManifest::getOptions($this->cart)->first(function (\Lunar\DataTypes\ShippingOption $opt) use ($option): bool {
                 return $opt->getIdentifier() == $option;
             });
         }
@@ -235,7 +236,7 @@ class CheckoutPage extends Component
      */
     public function saveShippingOption(): void
     {
-        $option = $this->shippingOptions->first(fn ($option) => $option->getIdentifier() == $this->chosenShipping);
+        $option = $this->shippingOptions->first(fn (\Lunar\DataTypes\ShippingOption $option) => $option->getIdentifier() == $this->chosenShipping);
 
         CartSession::setShippingOption($option);
 
@@ -244,7 +245,7 @@ class CheckoutPage extends Component
         $this->determineCheckoutStep();
     }
 
-    public function checkout()
+    public function checkout(): ?\Illuminate\Http\RedirectResponse
     {
         $payment = Payments::cart($this->cart)->withData([
             'payment_intent_client_secret' => $this->payment_intent_client_secret,
@@ -254,7 +255,7 @@ class CheckoutPage extends Component
         if ($payment->success) {
             redirect()->route('checkout-success.view');
 
-            return;
+            return null;
         }
 
         return redirect()->route('checkout-success.view');

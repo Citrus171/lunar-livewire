@@ -35,7 +35,7 @@ class Cart extends Component
     /**
      * Get the current cart instance.
      */
-    public function getCartProperty()
+    public function getCartProperty(): ?\Lunar\Models\Cart
     {
         return CartSession::current();
     }
@@ -62,7 +62,7 @@ class Cart extends Component
         $this->dispatch('cartUpdated');
     }
 
-    public function removeLine($id): void
+    public function removeLine(int|string $id): void
     {
         CartSession::remove($id);
         $this->mapLines();
@@ -76,7 +76,7 @@ class Cart extends Component
      */
     public function mapLines(): void
     {
-        $this->lines = $this->cartLines->map(function ($line) {
+        $this->lines = $this->cartLines->map(function (\Lunar\Models\CartLine $line) {
             return [
                 'id' => $line->id,
                 'identifier' => $line->purchasable->getIdentifier(),

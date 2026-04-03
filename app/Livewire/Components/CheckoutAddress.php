@@ -44,7 +44,7 @@ class CheckoutAddress extends Component
     {
         $this->cart = CartSession::current();
 
-        $this->address = $this->cart->addresses->first(fn ($add) => $add->type == $this->type) ?: new CartAddress;
+        $this->address = $this->cart->addresses->first(fn (CartAddress $add) => $add->type == $this->type) ?: new CartAddress;
 
         // If we have an existing ID then it should already be valid and ready to go.
         $this->editing = (bool) ! $this->address->id;
@@ -109,7 +109,7 @@ class CheckoutAddress extends Component
         }
     }
 
-    public function getCountriesProperty()
+    public function getCountriesProperty(): \Illuminate\Database\Eloquent\Collection
     {
         return Country::whereIn('iso3', ['GBR', 'USA'])->get();
     }

@@ -15,7 +15,8 @@ class SearchPage extends Component
     /**
      * {@inheritDoc}
      */
-    protected $queryString = [
+    /** @var array<string, string> */
+    protected array $queryString = [
         'term',
     ];
 

@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         LunarPanel::panel(
-            fn ($panel) => $panel->plugins([
+            fn (\Filament\Panel $panel) => $panel->plugins([
                 new ShippingPlugin,
             ])
         )
