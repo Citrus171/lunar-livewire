@@ -33,9 +33,9 @@
         "laravel/pint": "^1.29",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0|^8.1",
-        "pestphp/pest": "^4.4",
-        "pestphp/pest-plugin-laravel": "^4.1",
-        "pestphp/pest-plugin-type-coverage": "^4.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "pestphp/pest-plugin-type-coverage": "^3.0",
         "phpunit/phpunit": "^12.5",
         "rector/rector": "^2.3",
         "spatie/laravel-ignition": "^2.0"
