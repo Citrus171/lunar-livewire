@@ -38,6 +38,56 @@ jobs:
       - name: Run full test pipeline
         run: composer test
 
+  browser:
+    name: Browser Test (pest-plugin-browser)
+    runs-on: ubuntu-latest
+    env:
+      APP_KEY: base64:3pxlA4t05qwrkiqvjo04/rnk331vBH92uoMyfKvnUZU=
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: database/database.sqlite
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist --ignore-platform-reqs
+
+      - name: Install Node dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Prepare database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+          php artisan migrate --force
+
+      - name: Run Browser tests
+        run: composer test:browser
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-screenshots
+          path: tests/Browser/Screenshots/
+          if-no-files-found: ignore
+
   e2e:
     name: E2E Test (Playwright)
     runs-on: ubuntu-latest
