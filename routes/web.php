@@ -2,12 +2,17 @@
 
 use App\Livewire\Account\AccountIndex;
 use App\Livewire\Auth\LoginPage;
+use App\Livewire\Auth\RegisterPage;
+use App\Livewire\Auth\VerifyEmailPage;
 use App\Livewire\CheckoutPage;
 use App\Livewire\CheckoutSuccessPage;
 use App\Livewire\CollectionPage;
 use App\Livewire\Home;
 use App\Livewire\ProductPage;
 use App\Livewire\SearchPage;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +41,22 @@ Route::get('checkout/success', CheckoutSuccessPage::class)->name('checkout-succe
 
 Route::get('/login', LoginPage::class)->name('login')->middleware('guest');
 
+Route::get('/register', RegisterPage::class)->name('register')->middleware('guest');
+
+Route::get('/email/verify', VerifyEmailPage::class)->name('verification.notice')->middleware('auth');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request): RedirectResponse {
+    $request->fulfill();
+
+    return redirect('/account');
+})->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request): RedirectResponse {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -44,6 +65,6 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-Route::middleware('auth')->prefix('account')->group(function (): void {
+Route::middleware(['auth', 'verified'])->prefix('account')->group(function (): void {
     Route::get('/', AccountIndex::class)->name('account.index');
 });
