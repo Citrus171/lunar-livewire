@@ -1,6 +1,8 @@
 <?php
 
 use App\Livewire\Account\AccountIndex;
+use App\Livewire\Account\OrderDetail;
+use App\Livewire\Account\OrderHistory;
 use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
@@ -73,4 +75,6 @@ Route::post('/logout', function () {
 
 Route::middleware(['auth', 'verified'])->prefix('account')->group(function (): void {
     Route::get('/', AccountIndex::class)->name('account.index');
+    Route::get('/orders', OrderHistory::class)->name('account.orders.index');
+    Route::get('/orders/{orderId}', OrderDetail::class)->name('account.orders.show');
 });
