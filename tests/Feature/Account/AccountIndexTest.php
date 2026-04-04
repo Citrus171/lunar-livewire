@@ -23,31 +23,26 @@ it('直近3件の注文が表示されること', function (): void {
 
     $user = User::factory()->create();
 
-    Order::factory()->count(4)->create([
-        'user_id' => $user->id,
-        'currency_code' => 'JPY',
-        'compare_currency_code' => 'JPY',
-        'reference' => fn () => 'ORD-' . fake()->unique()->numerify('####'),
-        'placed_at' => now(),
-        'status' => 'payment-received',
-    ]);
-
-    $latestOrders = Order::query()
-        ->where('user_id', $user->id)
-        ->orderByDesc('placed_at')
-        ->limit(3)
-        ->get();
+    // placed_at を1分ずつずらして順序を確定させる
+    // ORD-1: -4分前（最古・表示されない）, ORD-2〜4: -3〜-1分前（直近3件・表示される）
+    foreach (range(1, 4) as $i) {
+        Order::factory()->create([
+            'user_id' => $user->id,
+            'currency_code' => 'JPY',
+            'compare_currency_code' => 'JPY',
+            'reference' => "ORD-{$i}",
+            'placed_at' => now()->subMinutes(5 - $i),
+            'status' => 'payment-received',
+        ]);
+    }
 
     $response = $this->actingAs($user)->get('/account');
 
     $response->assertOk();
-    $latestOrders->each(fn ($order) => $response->assertSee($order->reference));
-    $response->assertDontSee(
-        Order::query()->where('user_id', $user->id)
-            ->orderBy('placed_at')
-            ->first()
-            ->reference
-    );
+    $response->assertSee('ORD-2');
+    $response->assertSee('ORD-3');
+    $response->assertSee('ORD-4');
+    $response->assertDontSee('ORD-1');
 });
 
 it('注文履歴ページへのリンクが表示されること', function (): void {
