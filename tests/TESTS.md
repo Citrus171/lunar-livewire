@@ -107,6 +107,12 @@
 - [ ] パスワードリセット完了後に/loginへリダイレクトされること
 - [ ] 無効なトークンを使用した時、エラーメッセージが表示されること
 
+### Account/AccountIndexTest
+- [ ] ウェルカムメッセージにfirst_nameが表示されること
+- [ ] 直近3件の注文が表示されること
+- [ ] 注文履歴ページへのリンクが表示されること
+- [ ] ログアウトボタンが表示されること
+
 ### Http/Livewire/HomeTest
 - [ ] renders home page with livewire components
 

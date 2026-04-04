@@ -41,11 +41,11 @@ class LunarBaselineSeeder extends Seeder
     );
 
     Currency::query()->firstOrCreate(
-      ['code' => 'USD'],
+      ['code' => 'JPY'],
       [
-        'name' => 'US Dollar',
+        'name' => 'Japanese Yen',
         'exchange_rate' => 1,
-        'decimal_places' => 2,
+        'decimal_places' => 0,
         'default' => true,
         'enabled' => true,
       ]
