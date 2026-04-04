@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 use App\Livewire\Auth\VerifyEmailPage;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
-
-uses(RefreshDatabase::class);
 
 it('/email/verifyでメール未認証ユーザーに案内ページが表示されること', function (): void {
     $user = User::factory()->unverified()->create();

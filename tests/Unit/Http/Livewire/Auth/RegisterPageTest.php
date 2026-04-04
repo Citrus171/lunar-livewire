@@ -5,11 +5,8 @@ declare(strict_types=1);
 use App\Livewire\Auth\RegisterPage;
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
-
-uses(RefreshDatabase::class);
 
 it('/registerで新規登録フォームが表示されること', function (): void {
     $response = $this->get('/register');

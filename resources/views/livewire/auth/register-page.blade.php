@@ -9,26 +9,26 @@
         <form wire:submit="register" class="mt-8 space-y-6">
             <div class="space-y-4">
                 <div>
-                    <label for="first_name" class="block text-sm font-medium text-gray-700">姓</label>
+                    <label for="first_name" class="block text-sm font-medium text-gray-700">名</label>
                     <input id="first_name"
                            wire:model="first_name"
                            type="text"
                            required
                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="山田">
+                           placeholder="太郎">
                     @error('first_name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
-                    <label for="last_name" class="block text-sm font-medium text-gray-700">名</label>
+                    <label for="last_name" class="block text-sm font-medium text-gray-700">姓</label>
                     <input id="last_name"
                            wire:model="last_name"
                            type="text"
                            required
                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                           placeholder="太郎">
+                           placeholder="山田">
                     @error('last_name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -74,7 +74,7 @@
                 </div>
 
                 <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700">電話番号</label>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">電話番号 <span class="text-gray-400 text-xs">（任意）</span></label>
                     <input id="phone"
                            wire:model="phone"
                            type="tel"
