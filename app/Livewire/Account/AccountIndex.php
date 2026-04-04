@@ -16,7 +16,7 @@ class AccountIndex extends Component
         $recentOrders = Order::query()
             ->where('user_id', Auth::id())
             ->with('currency')
-            ->orderByDesc('placed_at')
+            ->latest('placed_at')
             ->limit(3)
             ->get();
 

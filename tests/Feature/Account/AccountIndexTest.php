@@ -27,7 +27,7 @@ it('直近3件の注文が表示されること', function (): void {
             'user_id' => $user->id,
             'currency_code' => 'JPY',
             'compare_currency_code' => 'JPY',
-            'reference' => "ORD-{$i}",
+            'reference' => 'ORD-' . $i,
             'placed_at' => now()->subMinutes(5 - $i),
             'status' => 'payment-received',
         ]);
