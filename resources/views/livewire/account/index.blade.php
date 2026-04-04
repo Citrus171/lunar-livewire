@@ -29,9 +29,9 @@
         @endif
 
         <div class="mt-4">
-            <a href="/account/orders" class="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
-                注文履歴をすべて見る
-            </a>
+            <span class="text-gray-500 text-sm font-medium">
+                注文履歴をすべて見る（現在利用できません）
+            </span>
         </div>
     </div>
 

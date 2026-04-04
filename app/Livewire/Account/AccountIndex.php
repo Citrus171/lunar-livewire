@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Livewire\Account;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;

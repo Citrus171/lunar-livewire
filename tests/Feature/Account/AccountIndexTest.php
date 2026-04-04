@@ -3,11 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Lunar\Models\Currency;
 use Lunar\Models\Order;
-
-uses(RefreshDatabase::class);
 
 it('ウェルカムメッセージにfirst_nameが表示されること', function (): void {
     $user = User::factory()->create(['first_name' => 'Taro']);
@@ -45,13 +42,13 @@ it('直近3件の注文が表示されること', function (): void {
     $response->assertDontSee('ORD-1');
 });
 
-it('注文履歴ページへのリンクが表示されること', function (): void {
+it('注文履歴テキストが表示されること', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->get('/account');
 
     $response->assertOk();
-    $response->assertSee('/account/orders');
+    $response->assertSee('注文履歴をすべて見る');
 });
 
 it('ログアウトボタンが表示されること', function (): void {
