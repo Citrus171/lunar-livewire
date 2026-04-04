@@ -44,7 +44,5 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::middleware('auth')->prefix('account')->group(function (): void {
-    Route::get('/', function () {
-        return view('livewire.account.index');
-    })->name('account.index');
+    Route::get('/', fn() => view('livewire.account.index'))->name('account.index');
 });
