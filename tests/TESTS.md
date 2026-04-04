@@ -56,9 +56,17 @@
 - [ ] saves billing address details
 - [ ] saves shipping and billing when shipping-is-billing is enabled
 
+### Http/Livewire/Auth/LoginPageTest
+- [ ] /loginでログインフォームが表示されること
+- [ ] 正しい認証情報でログインすると/accountへリダイレクトされること
+- [ ] 誤った認証情報でエラーメッセージが表示されること
+
 ### Http/Livewire/Components/NavigationTest
 - [ ] mounts navigation component
 - [ ] renders all collections in navigation
+- [ ] 未ログイン状態のナビに「ログイン」「新規登録」リンクが表示されること
+- [ ] ログイン済み状態のナビに「マイページ」リンクが表示されること
+- [ ] ログアウトすると/へリダイレクトされること
 
 ### Http/Livewire/Components/ShippingOptionsTest
 - [ ] validates selected option and saves it into cart session
@@ -71,6 +79,10 @@
 - [ ] phoneカラムがnullableであること
 - [ ] MustVerifyEmailを実装していること
 - [ ] first_name・last_name・phoneがfillableに含まれていること
+
+### Auth/AuthTest
+- [ ] ログアウト後にトップページ（/）へリダイレクトされること
+- [ ] 未認証状態で/accountにアクセスすると/loginへリダイレクトされること
 
 ### Http/Livewire/HomeTest
 - [ ] renders home page with livewire components

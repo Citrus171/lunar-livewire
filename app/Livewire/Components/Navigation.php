@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Components;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
@@ -25,6 +26,15 @@ class Navigation extends Component
     public function collections(): \Illuminate\Support\Collection
     {
         return Collection::with(['defaultUrl'])->get()->toTree();
+    }
+
+    public function logout(): void
+    {
+        Auth::logout();
+        session()->invalidate();
+        session()->regenerateToken();
+
+        $this->redirect('/', navigate: true);
     }
 
     public function render(): View

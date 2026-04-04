@@ -26,6 +26,31 @@
             <x-header.search class="max-w-sm mr-4" />
 
             <div class="flex items-center -mr-4 sm:-mr-6 lg:mr-0">
+                <div class="hidden lg:flex lg:items-center lg:gap-2 mr-2">
+                    @auth
+                        <a href="{{ url('/account') }}"
+                           class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition"
+                           wire:navigate>
+                            マイページ
+                        </a>
+                        <button wire:click="logout"
+                                class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition">
+                            ログアウト
+                        </button>
+                    @else
+                        <a href="{{ url('/login') }}"
+                           class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition"
+                           wire:navigate>
+                            ログイン
+                        </a>
+                        <a href="{{ url('/register') }}"
+                           class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition"
+                           wire:navigate>
+                            新規登録
+                        </a>
+                    @endauth
+                </div>
+
                 @livewire('components.cart')
 
                 <div x-data="{ mobileMenu: false }">
