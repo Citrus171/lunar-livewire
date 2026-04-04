@@ -123,6 +123,27 @@ Tailwind CSS v3 + Alpine.js（Livewire 経由）+ `@ryangjchandler/alpine-clipbo
 - happy path・失敗ケース・境界値を必ずテストする
 - `php artisan test --compact` でフィルタを使い最小限のテストを実行する
 
+### ページ・リンク追加時の必須カバレッジ
+
+新規ページを作成した場合、または既存ページに新規リンクを追加した場合は、**リンク先ページが HTTP 200 でエラーなく表示されること**を必ずテストでカバーすること。
+
+```php
+// 例: 認証不要ページ
+it('ページ名が表示されること', function (): void {
+    $response = $this->get('/path');
+    $response->assertOk();
+});
+
+// 例: 認証必須ページ
+it('ページ名がログイン済み状態でエラーなく表示されること', function (): void {
+    $user = User::factory()->create();
+    $response = $this->actingAs($user)->get('/path');
+    $response->assertOk();
+});
+```
+
+リンク先が 404・500 にならないことを実装と同時に保証すること。
+
 ## Notes
 
 ### テスト一覧ファイルの更新

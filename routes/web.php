@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Account\AccountIndex;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\CheckoutPage;
 use App\Livewire\CheckoutSuccessPage;
@@ -44,5 +45,5 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::middleware('auth')->prefix('account')->group(function (): void {
-    Route::get('/', fn() => view('livewire.account.index'))->name('account.index');
+    Route::get('/', AccountIndex::class)->name('account.index');
 });
