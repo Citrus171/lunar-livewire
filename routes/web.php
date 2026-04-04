@@ -1,8 +1,10 @@
 <?php
 
 use App\Livewire\Account\AccountIndex;
+use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\LoginPage;
 use App\Livewire\Auth\RegisterPage;
+use App\Livewire\Auth\ResetPasswordPage;
 use App\Livewire\Auth\VerifyEmailPage;
 use App\Livewire\CheckoutPage;
 use App\Livewire\CheckoutSuccessPage;
@@ -40,6 +42,10 @@ Route::get('checkout', CheckoutPage::class)->name('checkout.view');
 Route::get('checkout/success', CheckoutSuccessPage::class)->name('checkout-success.view');
 
 Route::get('/login', LoginPage::class)->name('login')->middleware('guest');
+
+Route::get('/forgot-password', ForgotPasswordPage::class)->name('password.request')->middleware('guest');
+
+Route::get('/reset-password/{token}', ResetPasswordPage::class)->name('password.reset')->middleware('guest');
 
 Route::get('/register', RegisterPage::class)->name('register')->middleware('guest');
 
