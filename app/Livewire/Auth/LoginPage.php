@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -26,6 +27,8 @@ class LoginPage extends Component
 
             return;
         }
+
+        Session::regenerate();
 
         $this->redirect('/account', navigate: true);
     }

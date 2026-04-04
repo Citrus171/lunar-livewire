@@ -45,7 +45,7 @@
             </div>
 
             <div class="text-center text-sm">
-                <a href="/register" class="font-medium text-indigo-600 hover:text-indigo-500" wire:navigate>
+                <a href="{{ url('/register') }}" class="font-medium text-indigo-600 hover:text-indigo-500" wire:navigate>
                     アカウントをお持ちでない方は新規登録
                 </a>
             </div>
