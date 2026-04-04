@@ -1,0 +1,17 @@
+{
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "FILE=$(cat | jq -r '.tool_input.file_path // empty'); if [[ \"$FILE\" == *.php ]]; then cd \"$CLAUDE_PROJECT_DIR\" && ./vendor/bin/pint --dirty 2>&1; fi",
+                        "timeout": 30,
+                        "statusMessage": "Pint formatting..."
+                    }
+                ]
+            }
+        ]
+    }
+}
