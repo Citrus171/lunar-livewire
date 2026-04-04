@@ -18,6 +18,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+/memo/
 /.claude/skills
 /.playwright-mcp
 .DS_Store
