@@ -22,12 +22,16 @@
 ### Http/Livewire/ProductPageTest
 - [ ] mounts product page component
 - [ ] loads the correct product
-- [ ] returns 404 for unknown slug
+- [ ] renders product name
 
 ### Http/Livewire/CheckoutPageTest
 - [ ] mounts checkout component
 - [ ] has correct step on load
 - [ ] has correct step with shipping address on load
+- [ ] is on billing step when shipping option is selected
+- [ ] is on payment step when billing address exists
+- [ ] can save shipping address
+- [ ] can save billing address
 
 ### Http/Livewire/CheckoutSuccessPageTest
 - [ ] redirects to home when there is no completed order
@@ -48,10 +52,8 @@
 - [ ] updates editable cart lines
 
 ### Http/Livewire/Components/CheckoutAddressTest
-- [ ] can save shipping address
-- [ ] can save billing address
-- [ ] saves billing address details
 - [ ] refreshes address from cart by type
+- [ ] saves billing address details
 - [ ] saves shipping and billing when shipping-is-billing is enabled
 
 ### Http/Livewire/Components/NavigationTest
@@ -61,13 +63,17 @@
 ### Http/Livewire/Components/ShippingOptionsTest
 - [ ] validates selected option and saves it into cart session
 - [ ] preselects shipping option from shipping address
-- [ ] is on billing step when shipping option is selected
-- [ ] is on payment step when billing address exists
 
 ## Feature
 
 ### Http/Livewire/HomeTest
 - [ ] renders home page with livewire components
+
+## Browser (pest-plugin-browser)
+
+### Browser/HomeTest
+- [ ] shows the welcome banner on the home page
+- [ ] home page path is root
 
 ## E2E (Playwright/TypeScript)
 
