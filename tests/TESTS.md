@@ -66,6 +66,12 @@
 
 ## Feature
 
+### UserModelTest
+- [ ] usersテーブルにfirst_name・last_name・phoneカラムが存在すること
+- [ ] phoneカラムがnullableであること
+- [ ] MustVerifyEmailを実装していること
+- [ ] first_name・last_name・phoneがfillableに含まれていること
+
 ### Http/Livewire/HomeTest
 - [ ] renders home page with livewire components
 

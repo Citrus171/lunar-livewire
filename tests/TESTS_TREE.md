@@ -57,6 +57,11 @@ tests/
 │                   ├── validates selected option and saves it into cart session
 │                   └── preselects shipping option from shipping address
 ├── Feature/
+│   ├── UserModelTest.php
+│   │   ├── usersテーブルにfirst_name・last_name・phoneカラムが存在すること
+│   │   ├── phoneカラムがnullableであること
+│   │   ├── MustVerifyEmailを実装していること
+│   │   └── first_name・last_name・phoneがfillableに含まれていること
 │   └── Http/
 │       └── Livewire/
 │           └── HomeTest.php
