@@ -18,9 +18,7 @@ class OrderDetail extends Component
     {
         $order = Order::query()->find($orderId);
 
-        if ($order === null || $order->user_id !== Auth::id()) {
-            throw new NotFoundHttpException();
-        }
+        throw_if($order === null || $order->user_id !== Auth::id(), NotFoundHttpException::class);
     }
 
     public function render(): View

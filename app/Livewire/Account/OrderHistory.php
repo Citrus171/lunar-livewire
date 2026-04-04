@@ -16,7 +16,7 @@ class OrderHistory extends Component
         $orders = Order::query()
             ->where('user_id', Auth::id())
             ->with(['lines', 'shippingAddress'])
-            ->orderByDesc('placed_at')
+            ->latest('placed_at')
             ->get();
 
         return view('livewire.account.orders.index', [
