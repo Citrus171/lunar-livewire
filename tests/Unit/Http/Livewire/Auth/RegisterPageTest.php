@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Livewire\Auth\RegisterPage;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
@@ -72,11 +73,11 @@ it('正常な情報を入力した時、ユーザーがDBに保存されメー�
         ->set('phone', '090-1234-5678')
         ->call('register');
 
-    $user = User::where('email', 'newuser@example.com')->first();
+    $user = User::query()->where('email', 'newuser@example.com')->first();
     expect($user)->not->toBeNull();
     expect($user->first_name)->toBe('山田');
     expect($user->last_name)->toBe('太郎');
     expect($user->phone)->toBe('090-1234-5678');
 
-    Notification::assertSentTo($user, \Illuminate\Auth\Notifications\VerifyEmail::class);
+    Notification::assertSentTo($user, VerifyEmail::class);
 });

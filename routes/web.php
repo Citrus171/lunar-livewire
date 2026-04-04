@@ -11,6 +11,7 @@ use App\Livewire\Home;
 use App\Livewire\ProductPage;
 use App\Livewire\SearchPage;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -44,13 +45,13 @@ Route::get('/register', RegisterPage::class)->name('register')->middleware('gues
 
 Route::get('/email/verify', VerifyEmailPage::class)->name('verification.notice')->middleware('auth');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request): \Illuminate\Http\RedirectResponse {
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request): RedirectResponse {
     $request->fulfill();
 
     return redirect('/account');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::post('/email/verification-notification', function (Request $request): \Illuminate\Http\RedirectResponse {
+Route::post('/email/verification-notification', function (Request $request): RedirectResponse {
     $request->user()->sendEmailVerificationNotification();
 
     return back()->with('status', 'verification-link-sent');

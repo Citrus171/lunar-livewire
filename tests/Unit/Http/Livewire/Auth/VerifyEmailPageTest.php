@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Livewire\Auth\VerifyEmailPage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\URL;
 
 uses(RefreshDatabase::class);
 
@@ -20,10 +21,10 @@ it('/email/verifyでメール未認証ユーザーに案内ページが表示さ
 it('メール認証リンクをクリックするとアカウントが認証済みになること', function (): void {
     $user = User::factory()->unverified()->create();
 
-    $verificationUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+    $verificationUrl = URL::temporarySignedRoute(
         'verification.verify',
         now()->addMinutes(60),
-        ['id' => $user->id, 'hash' => sha1($user->email)]
+        ['id' => $user->id, 'hash' => sha1((string) $user->email)]
     );
 
     $response = $this->actingAs($user)->get($verificationUrl);
