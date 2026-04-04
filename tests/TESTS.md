@@ -61,6 +61,18 @@
 - [ ] 正しい認証情報でログインすると/accountへリダイレクトされること
 - [ ] 誤った認証情報でエラーメッセージが表示されること
 
+### Http/Livewire/Auth/RegisterPageTest
+- [ ] /registerで新規登録フォームが表示されること
+- [ ] 必須フィールドが未入力の時、バリデーションエラーが表示されること
+- [ ] パスワードが一致しない時、バリデーションエラーが表示されること
+- [ ] 既存のメールアドレスで登録しようとした時、バリデーションエラーが表示されること
+- [ ] 正常登録後に/email/verifyへリダイレクトされること
+- [ ] 正常な情報を入力した時、ユーザーがDBに保存されメール認証メールが送信されること
+
+### Http/Livewire/Auth/VerifyEmailPageTest
+- [ ] /email/verifyでメール未認証ユーザーに案内ページが表示されること
+- [ ] メール認証リンクをクリックするとアカウントが認証済みになること
+
 ### Http/Livewire/Components/NavigationTest
 - [ ] mounts navigation component
 - [ ] renders all collections in navigation
@@ -83,6 +95,8 @@
 ### Auth/AuthTest
 - [ ] ログアウト後にトップページ（/）へリダイレクトされること
 - [ ] 未認証状態で/accountにアクセスすると/loginへリダイレクトされること
+- [ ] メール認証済みのユーザーが/accountにアクセスするとエラーなく表示されること
+- [ ] メール未認証のユーザーが/accountにアクセスすると/email/verifyへリダイレクトされること
 
 ### Http/Livewire/HomeTest
 - [ ] renders home page with livewire components
