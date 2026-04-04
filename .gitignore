@@ -18,6 +18,7 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+/.claude/skills
 /.playwright-mcp
 .DS_Store
 .lando.local.yml
