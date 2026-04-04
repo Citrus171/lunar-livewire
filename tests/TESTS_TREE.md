@@ -37,6 +37,11 @@ tests/
 │           ├── SearchPageTest.php
 │           │   ├── renders search page
 │           │   └── returns paginated search results
+│           ├── Auth/
+│           │   └── LoginPageTest.php
+│           │       ├── /loginでログインフォームが表示されること
+│           │       ├── 正しい認証情報でログインすると/accountへリダイレクトされること
+│           │       └── 誤った認証情報でエラーメッセージが表示されること
 │           └── Components/
 │               ├── AddToCartTest.php
 │               │   ├── adds item to cart when stock is sufficient
@@ -52,7 +57,10 @@ tests/
 │               │   └── saves shipping and billing when shipping-is-billing is enabled
 │               ├── NavigationTest.php
 │               │   ├── mounts navigation component
-│               │   └── renders all collections in navigation
+│               │   ├── renders all collections in navigation
+│               │   ├── 未ログイン状態のナビに「ログイン」「新規登録」リンクが表示されること
+│               │   ├── ログイン済み状態のナビに「マイページ」リンクが表示されること
+│               │   └── ログアウトすると/へリダイレクトされること
 │               └── ShippingOptionsTest.php
 │                   ├── validates selected option and saves it into cart session
 │                   └── preselects shipping option from shipping address
@@ -62,6 +70,10 @@ tests/
 │   │   ├── phoneカラムがnullableであること
 │   │   ├── MustVerifyEmailを実装していること
 │   │   └── first_name・last_name・phoneがfillableに含まれていること
+│   ├── Auth/
+│   │   └── AuthTest.php
+│   │       ├── ログアウト後にトップページ（/）へリダイレクトされること
+│   │       └── 未認証状態で/accountにアクセスすると/loginへリダイレクトされること
 │   └── Http/
 │       └── Livewire/
 │           └── HomeTest.php
