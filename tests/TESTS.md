@@ -1,0 +1,76 @@
+# テスト一覧
+
+## Unit
+
+### ArchTest
+- [ ] preset → php
+- [ ] preset → security
+- [ ] strict types
+
+### Http/Livewire/HomeTest
+- [ ] mounts home component
+- [ ] returns null sale collection images when sale collection does not exist
+- [ ] returns chunked sale collection images when sale collection exists
+- [ ] does not return sale collection as random collection
+
+### Http/Livewire/CollectionPageTest
+- [ ] mounts collection page component
+- [ ] renders collection name
+- [ ] renders products in collection
+- [ ] returns 404 for unknown slug
+
+### Http/Livewire/ProductPageTest
+- [ ] mounts product page component
+- [ ] loads the correct product
+- [ ] returns 404 for unknown slug
+
+### Http/Livewire/CheckoutPageTest
+- [ ] mounts checkout component
+- [ ] has correct step on load
+- [ ] has correct step with shipping address on load
+
+### Http/Livewire/CheckoutSuccessPageTest
+- [ ] redirects to home when there is no completed order
+- [ ] sets completed order and clears cart session
+
+### Http/Livewire/SearchPageTest
+- [ ] renders search page
+- [ ] returns paginated search results
+
+### Http/Livewire/Components/AddToCartTest
+- [ ] adds item to cart when stock is sufficient
+- [ ] fails when requested quantity exceeds stock
+
+### Http/Livewire/Components/CartTest
+- [ ] renders cart component
+- [ ] shows cart lines after add-to-cart event
+- [ ] removes a cart line
+- [ ] updates editable cart lines
+
+### Http/Livewire/Components/CheckoutAddressTest
+- [ ] can save shipping address
+- [ ] can save billing address
+- [ ] saves billing address details
+- [ ] refreshes address from cart by type
+- [ ] saves shipping and billing when shipping-is-billing is enabled
+
+### Http/Livewire/Components/NavigationTest
+- [ ] mounts navigation component
+- [ ] renders all collections in navigation
+
+### Http/Livewire/Components/ShippingOptionsTest
+- [ ] validates selected option and saves it into cart session
+- [ ] preselects shipping option from shipping address
+- [ ] is on billing step when shipping option is selected
+- [ ] is on payment step when billing address exists
+
+## Feature
+
+### Http/Livewire/HomeTest
+- [ ] renders home page with livewire components
+
+## E2E (Playwright/TypeScript)
+
+### e2e/home.spec.ts
+- [ ] home page responds successfully
+- [ ] can add a product to cart from product detail page
