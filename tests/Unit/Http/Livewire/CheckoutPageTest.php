@@ -5,7 +5,9 @@ declare(strict_types=1);
 use App\Livewire\CheckoutPage;
 use Illuminate\Support\Facades\Config;
 use Livewire\Livewire;
+use Lunar\Base\DataTransferObjects\PaymentAuthorize;
 use Lunar\Facades\CartSession;
+use Lunar\Facades\Payments;
 use Lunar\Models\Cart;
 use Lunar\Models\CartAddress;
 use Lunar\Models\Country;
@@ -196,4 +198,27 @@ it('can save billing address', function (): void {
         'country_id' => $country->id,
         'type' => 'billing',
     ]);
+});
+
+it('カートが空の時、トップページにリダイレクトされること', function (): void {
+    CartSession::shouldReceive('current')->andReturn(null);
+
+    Livewire::test(CheckoutPage::class)
+        ->assertRedirect('/');
+});
+
+it('決済が成功した時、チェックアウト完了ページにリダイレクトされること', function (): void {
+    $cart = Cart::factory()->create()->calculate();
+    CartSession::shouldReceive('current')->andReturn($cart);
+
+    $mockDriver = Mockery::mock();
+    $mockDriver->shouldReceive('withData')->andReturnSelf();
+    $mockDriver->shouldReceive('authorize')->andReturn(
+        new PaymentAuthorize(success: true, orderId: 1)
+    );
+    Payments::shouldReceive('cart')->andReturn($mockDriver);
+
+    Livewire::test(CheckoutPage::class)
+        ->call('checkout')
+        ->assertRedirect(route('checkout-success.view'));
 });

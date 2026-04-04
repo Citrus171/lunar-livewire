@@ -22,11 +22,15 @@ tests/
 │           ├── ProductPageTest.php
 │           │   ├── mounts product page component
 │           │   ├── loads the correct product
-│           │   └── returns 404 for unknown slug
+│           │   └── renders product name
 │           ├── CheckoutPageTest.php
 │           │   ├── mounts checkout component
 │           │   ├── has correct step on load
-│           │   └── has correct step with shipping address on load
+│           │   ├── has correct step with shipping address on load
+│           │   ├── is on billing step when shipping option is selected
+│           │   ├── is on payment step when billing address exists
+│           │   ├── can save shipping address
+│           │   └── can save billing address
 │           ├── CheckoutSuccessPageTest.php
 │           │   ├── redirects to home when there is no completed order
 │           │   └── sets completed order and clears cart session
@@ -43,24 +47,24 @@ tests/
 │               │   ├── removes a cart line
 │               │   └── updates editable cart lines
 │               ├── CheckoutAddressTest.php
-│               │   ├── can save shipping address
-│               │   ├── can save billing address
-│               │   ├── saves billing address details
 │               │   ├── refreshes address from cart by type
+│               │   ├── saves billing address details
 │               │   └── saves shipping and billing when shipping-is-billing is enabled
 │               ├── NavigationTest.php
 │               │   ├── mounts navigation component
 │               │   └── renders all collections in navigation
 │               └── ShippingOptionsTest.php
 │                   ├── validates selected option and saves it into cart session
-│                   ├── preselects shipping option from shipping address
-│                   ├── is on billing step when shipping option is selected
-│                   └── is on payment step when billing address exists
+│                   └── preselects shipping option from shipping address
 ├── Feature/
 │   └── Http/
 │       └── Livewire/
 │           └── HomeTest.php
 │               └── renders home page with livewire components
+├── Browser/
+│   └── HomeTest.php
+│       ├── shows the welcome banner on the home page
+│       └── home page path is root
 └── e2e/
     └── home.spec.ts  (Playwright/TypeScript)
         ├── home page responds successfully
