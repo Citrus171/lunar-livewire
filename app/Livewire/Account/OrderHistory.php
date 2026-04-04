@@ -15,7 +15,7 @@ class OrderHistory extends Component
     {
         $orders = Order::query()
             ->where('user_id', Auth::id())
-            ->with(['lines', 'shippingAddress'])
+            ->with(['currency'])
             ->latest('placed_at')
             ->get();
 
