@@ -64,6 +64,12 @@
 - [ ] validates selected option and saves it into cart session
 - [ ] preselects shipping option from shipping address
 
+### UserModelTest
+- [ ] usersテーブルにfirst_name・last_name・phoneカラムが存在すること
+- [ ] phoneカラムがnullableであること
+- [ ] MustVerifyEmailを実装していること
+- [ ] first_name・last_name・phoneがfillableに含まれていること
+
 ## Feature
 
 ### Http/Livewire/HomeTest
