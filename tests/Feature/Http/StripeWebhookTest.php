@@ -7,9 +7,9 @@ use Lunar\Stripe\Jobs\ProcessStripeWebhook;
 
 $generateStripeSignature = function (string $payload, string $secret): string {
     $timestamp = time();
-    $signature = hash_hmac('sha256', "{$timestamp}.{$payload}", $secret);
+    $signature = hash_hmac('sha256', sprintf('%d.%s', $timestamp, $payload), $secret);
 
-    return "t={$timestamp},v1={$signature}";
+    return sprintf('t=%d,v1=%s', $timestamp, $signature);
 };
 
 it('services.stripe.webhooks.lunar に STRIPE_WEBHOOK_SECRET が設定されていること', function (): void {
