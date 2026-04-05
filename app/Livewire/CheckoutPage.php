@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -103,13 +102,13 @@ class CheckoutPage extends Component
         }
 
         if ($this->payment_intent) {
-            $payment = Payments::driver($this->paymentType)->cart($this->cart)->withData([
+            $payment = Payments::driver('stripe')->cart($this->cart)->withData([
                 'payment_intent_client_secret' => $this->payment_intent_client_secret,
                 'payment_intent' => $this->payment_intent,
             ])->authorize();
 
             if ($payment->success) {
-                to_route('checkout-success.view');
+                $this->redirectRoute('checkout-success.view');
 
                 return;
             }
@@ -246,7 +245,7 @@ class CheckoutPage extends Component
         $this->determineCheckoutStep();
     }
 
-    public function checkout(): ?RedirectResponse
+    public function checkout(): void
     {
         $payment = Payments::cart($this->cart)->withData([
             'payment_intent_client_secret' => $this->payment_intent_client_secret,
@@ -254,12 +253,8 @@ class CheckoutPage extends Component
         ])->authorize();
 
         if ($payment->success) {
-            to_route('checkout-success.view');
-
-            return null;
+            $this->redirectRoute('checkout-success.view');
         }
-
-        return to_route('checkout-success.view');
     }
 
     /**

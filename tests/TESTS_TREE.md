@@ -30,7 +30,12 @@ tests/
 │           │   ├── is on billing step when shipping option is selected
 │           │   ├── is on payment step when billing address exists
 │           │   ├── can save shipping address
-│           │   └── can save billing address
+│           │   ├── can save billing address
+│           │   ├── カートが空の時、トップページにリダイレクトされること
+│           │   ├── 決済が成功した時、チェックアウト完了ページにリダイレクトされること
+│           │   ├── 決済が失敗した時、チェックアウト完了ページにリダイレクトされないこと
+│           │   ├── payment_intentパラメータ付きでStripe決済が成功した時、成功ページにリダイレクトされること
+│           │   └── payment_intentパラメータ付きでStripe決済が失敗した時、成功ページにリダイレクトされないこと
 │           ├── CheckoutSuccessPageTest.php
 │           │   ├── redirects to home when there is no completed order
 │           │   └── sets completed order and clears cart session
