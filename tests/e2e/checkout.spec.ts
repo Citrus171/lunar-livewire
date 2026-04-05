@@ -73,16 +73,32 @@ async function selectShippingOption(page: Page): Promise<void> {
  * Stripe Payment Elementのiframe内にカード情報を入力するヘルパー
  */
 async function fillStripeCard(page: Page, cardNumber: string): Promise<void> {
-    // Stripe Payment Element はiframe内に描画される
-    const stripeFrame = page.frameLocator('iframe[name^="__privateStripeFrame"]').nth(0);
+    // Stripe Payment Element は実装やバージョンで iframe 名が変わるため、src でも検出する
+    const stripeFrameSelector = 'iframe[src*="js.stripe.com"], iframe[name^="__privateStripeFrame"]';
+    await expect(page.locator(stripeFrameSelector).first()).toBeVisible({ timeout: 30000 });
 
-    await stripeFrame.locator('[placeholder="1234 1234 1234 1234"]').waitFor({ timeout: 15000 });
-    await stripeFrame.locator('[placeholder="1234 1234 1234 1234"]').fill(cardNumber);
-    await stripeFrame.locator('[placeholder="MM / YY"]').fill('12/30');
-    await stripeFrame.locator('[placeholder="CVC"]').fill('123');
+    const stripeFrame = page.frameLocator(stripeFrameSelector).first();
+    const cardNumberInput = stripeFrame.locator(
+        '[placeholder="1234 1234 1234 1234"], input[name="cardnumber"], input[autocomplete="cc-number"]'
+    ).first();
+    const expiryInput = stripeFrame.locator('[placeholder="MM / YY"], input[name="exp-date"], input[autocomplete="cc-exp"]').first();
+    const cvcInput = stripeFrame.locator('[placeholder="CVC"], input[name="cvc"], input[autocomplete="cc-csc"]').first();
+
+    await cardNumberInput.waitFor({ timeout: 30000 });
+    await cardNumberInput.fill(cardNumber);
+    await expiryInput.fill('12/30');
+    await cvcInput.fill('123');
+}
+
+function shouldSkipStripeTest(): boolean {
+    const key = process.env.STRIPE_KEY;
+
+    return !key || !/^pk_(test|live)_/.test(key);
 }
 
 test('成功フロー: テストカード 4242 4242 4242 4242 で決済すると注文完了ページが表示されること', async ({ page }) => {
+    test.setTimeout(90_000);
+    test.skip(shouldSkipStripeTest(), '有効な STRIPE_KEY (pk_test_*/pk_live_*) が未設定のため Stripe テストをスキップ');
     await addProductAndGoToCheckout(page);
 
     // ステップ1: 配送先住所を入力（shippingIsBilling=true がデフォルトなので請求先も自動設定）
@@ -97,9 +113,10 @@ test('成功フロー: テストカード 4242 4242 4242 4242 で決済すると
 
     // カード払いを選択
     await page.getByRole('button', { name: 'Pay by card' }).click();
+    await expect(page.getByRole('button', { name: 'Make Payment' })).toBeVisible({ timeout: 15000 });
 
     // Stripe Payment Elementが読み込まれるまで待機
-    await expect(page.locator('iframe[name^="__privateStripeFrame"]').nth(0)).toBeAttached({ timeout: 15000 });
+    await expect(page.locator('iframe[src*="js.stripe.com"], iframe[name^="__privateStripeFrame"]').first()).toBeVisible({ timeout: 30000 });
 
     // テストカード入力
     await fillStripeCard(page, '4242424242424242');
@@ -119,6 +136,8 @@ test('成功フロー: テストカード 4242 4242 4242 4242 で決済すると
 });
 
 test('失敗フロー: 拒否カード 4000 0000 0000 0002 で決済するとインラインエラーが表示されること', async ({ page }) => {
+    test.setTimeout(90_000);
+    test.skip(shouldSkipStripeTest(), '有効な STRIPE_KEY (pk_test_*/pk_live_*) が未設定のため Stripe テストをスキップ');
     await addProductAndGoToCheckout(page);
 
     // ステップ1: 配送先住所を入力
@@ -133,9 +152,10 @@ test('失敗フロー: 拒否カード 4000 0000 0000 0002 で決済するとイ
 
     // カード払いを選択
     await page.getByRole('button', { name: 'Pay by card' }).click();
+    await expect(page.getByRole('button', { name: 'Make Payment' })).toBeVisible({ timeout: 15000 });
 
     // Stripe Payment Elementが読み込まれるまで待機
-    await expect(page.locator('iframe[name^="__privateStripeFrame"]').nth(0)).toBeAttached({ timeout: 15000 });
+    await expect(page.locator('iframe[src*="js.stripe.com"], iframe[name^="__privateStripeFrame"]').first()).toBeVisible({ timeout: 30000 });
 
     // 拒否カードを入力
     await fillStripeCard(page, '4000000000000002');
