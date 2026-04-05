@@ -123,6 +123,10 @@ tests/
 │   │   ├── config lunar.payments に stripe ドライバーが登録されていること
 │   │   └── lunar_stripe_payment_intents テーブルが存在すること
 │   └── Http/
+│       ├── StripeWebhookTest.php
+│       │   ├── services.stripe.webhooks.lunar に STRIPE_WEBHOOK_SECRET が設定されていること
+│       │   ├── 不正なシグネチャを持つリクエストが 400 で拒否されること
+│       │   └── 正当なシグネチャを持つ payment_intent.succeeded イベントが 200 で処理されること
 │       └── Livewire/
 │           └── HomeTest.php
 │               └── renders home page with livewire components
