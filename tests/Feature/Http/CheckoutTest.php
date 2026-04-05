@@ -40,7 +40,7 @@ it('payment_intentパラメータ付きでStripe authorize成功時に /checkout
 
     $response = $this->get('/checkout?payment_intent=pi_test_123&payment_intent_client_secret=pi_test_123_secret');
 
-    $response->assertRedirect(route('checkout-success.view'));
+    $response->assertRedirectToSignedRoute('checkout-success.view', ['order' => 1]);
 });
 
 it('payment_intentパラメータ付きでStripe authorize失敗時にチェックアウトページが再表示されること', function (): void {

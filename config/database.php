@@ -1,9 +1,10 @@
 <?php
 
+use PDO\Mysql;
 use Illuminate\Support\Str;
 
-$mysqlAttrSslCa = defined('Pdo\\Mysql::ATTR_SSL_CA')
-    ? constant('Pdo\\Mysql::ATTR_SSL_CA')
+$mysqlAttrSslCa = defined(Mysql::class . '::ATTR_SSL_CA')
+    ? constant(Mysql::class . '::ATTR_SSL_CA')
     : PDO::MYSQL_ATTR_SSL_CA;
 
 return [

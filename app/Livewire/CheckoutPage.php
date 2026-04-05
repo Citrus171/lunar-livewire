@@ -113,8 +113,7 @@ class CheckoutPage extends Component
             ])->authorize();
 
             if ($payment->success) {
-                session()->put('checkout.completed_order_id', $payment->orderId);
-                $this->redirectRoute('checkout-success.view');
+                $this->redirect($this->successRedirectUrl($payment->orderId), navigate: true);
 
                 return;
             }
@@ -266,7 +265,7 @@ class CheckoutPage extends Component
         ])->authorize();
 
         if ($payment->success) {
-            $this->redirectRoute('checkout-success.view');
+            $this->redirect($this->successRedirectUrl($payment->orderId), navigate: true);
 
             return;
         }
@@ -316,6 +315,13 @@ class CheckoutPage extends Component
             $type.'.contact_email' => 'required|email',
             $type.'.contact_phone' => 'nullable',
         ];
+    }
+
+    protected function successRedirectUrl(int $orderId): string
+    {
+        return url()->temporarySignedRoute('checkout-success.view', now()->addMinutes(30), [
+            'order' => $orderId,
+        ]);
     }
 
     public function render(): View

@@ -47,6 +47,7 @@
 ### Http/Livewire/CheckoutSuccessPageTest
 - [ ] redirects to home when there is no completed order
 - [ ] sets completed order and clears cart session
+- [ ] 署名付きURLから注文を復元し、再訪しても表示できること
 
 ### Http/Livewire/SearchPageTest
 - [ ] renders search page

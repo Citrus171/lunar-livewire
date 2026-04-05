@@ -17,10 +17,20 @@ async function addProductAndGoToCheckout(page: Page): Promise<void> {
     }
 
     await expect(productCardLocator.first()).toBeVisible();
-    await productCardLocator.first().click();
+
+    const firstProductCard = productCardLocator.first();
+    const productName = (await firstProductCard.locator('strong').first().innerText()).trim();
+
+    await firstProductCard.click();
     await expect(page).toHaveURL(/\/products\//);
 
     await page.getByRole('button', { name: 'Add to Cart' }).click();
+    await page.getByRole('button', { name: /^Cart$/ }).click();
+
+    const cartPopover = page.locator('div[x-show="linesVisible"]').first();
+    await expect(cartPopover).toBeVisible();
+    await expect(cartPopover.getByText('Your cart is empty')).toHaveCount(0);
+    await expect(cartPopover.getByText(productName)).toBeVisible();
 
     await page.goto('/checkout');
     await expect(page).toHaveURL('/checkout');
@@ -51,9 +61,9 @@ async function selectShippingOption(page: Page): Promise<void> {
     await expect(shippingSection).toBeVisible({ timeout: 10000 });
 
     // 最初のオプションを選択（デフォルト選択済みの場合もある）
-    const firstOption = shippingSection.locator('input[type="radio"]').first();
-    if (await firstOption.count() > 0) {
-        await firstOption.check();
+    const firstOptionLabel = shippingSection.locator('label[for]').first();
+    if (await firstOptionLabel.count() > 0) {
+        await firstOptionLabel.click();
     }
 
     await shippingSection.getByRole('button', { name: 'Choose Shipping' }).click();
@@ -133,13 +143,13 @@ test('失敗フロー: 拒否カード 4000 0000 0000 0002 で決済するとイ
     // 決済ボタンをクリック
     await page.getByRole('button', { name: 'Make Payment' }).click();
 
-    // チェックアウトページに留まること（/checkout/successへ遷移しないこと）
-    await expect(page).not.toHaveURL(/\/checkout\/success/, { timeout: 15000 });
-
     // インラインエラーメッセージが表示されること
     // Alpine.jsのエラーdiv (x-show="error") またはLivewireのpaymentError表示
     const stripeErrorDiv = page.locator('[x-show="error"]').filter({ hasText: /\S+/ });
     const livewireErrorDiv = page.locator('[role="alert"]').filter({ hasText: /\S+/ });
 
     await expect(stripeErrorDiv.or(livewireErrorDiv)).toBeVisible({ timeout: 15000 });
+
+    // エラー表示後もチェックアウトページに留まることを確認
+    await expect(page).toHaveURL('/checkout');
 });

@@ -18,17 +18,8 @@ class CheckoutSuccessPage extends Component
 
     public function mount(): void
     {
-        // Stripe リダイレクト後は CartSession が新しい空カートを返すため、
-        // セッションに保存した orderId から直接注文を取得する
-        $orderId = session()->pull('checkout.completed_order_id');
-        if ($orderId) {
-            $order = Order::find($orderId);
-            if ($order?->placed_at) {
-                $this->order = $order;
-                CartSession::forget();
-
-                return;
-            }
+        if ($this->restoreOrderFromSignedUrl()) {
+            return;
         }
 
         $this->cart = CartSession::current();
@@ -41,6 +32,33 @@ class CheckoutSuccessPage extends Component
         $this->order = $this->cart->completedOrder;
 
         CartSession::forget();
+    }
+
+    protected function restoreOrderFromSignedUrl(): bool
+    {
+        if (! request()->hasValidSignature()) {
+            return false;
+        }
+
+        $orderId = request()->integer('order');
+
+        if (! $orderId) {
+            return false;
+        }
+
+        $order = Order::query()
+            ->whereKey($orderId)
+            ->whereNotNull('placed_at')
+            ->first();
+
+        if (! $order) {
+            return false;
+        }
+
+        $this->order = $order;
+        CartSession::forget();
+
+        return true;
     }
 
     public function render(): View

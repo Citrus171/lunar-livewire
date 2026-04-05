@@ -44,7 +44,8 @@ tests/
 │           │   └── payment_intentパラメータ付き決済失敗時に paymentType が card になること
 │           ├── CheckoutSuccessPageTest.php
 │           │   ├── redirects to home when there is no completed order
-│           │   └── sets completed order and clears cart session
+│           │   ├── sets completed order and clears cart session
+│           │   └── 署名付きURLから注文を復元し、再訪しても表示できること
 │           ├── SearchPageTest.php
 │           │   ├── renders search page
 │           │   └── returns paginated search results
