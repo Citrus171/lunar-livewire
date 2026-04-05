@@ -150,6 +150,12 @@
 - [ ] 不正なシグネチャを持つリクエストが 400 で拒否されること
 - [ ] 正当なシグネチャを持つ payment_intent.succeeded イベントが 200 で処理されること
 
+### Http/CheckoutTest
+- [ ] カートあり状態で /checkout にアクセスすると 200 が返ること
+- [ ] カートなし状態で /checkout にアクセスするとトップページにリダイレクトされること
+- [ ] payment_intentパラメータ付きでStripe authorize成功時に /checkout/success へリダイレクトされること
+- [ ] payment_intentパラメータ付きでStripe authorize失敗時にチェックアウトページが再表示されること
+
 ### Http/Livewire/HomeTest
 - [ ] renders home page with livewire components
 
