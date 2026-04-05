@@ -18,6 +18,10 @@ class CheckoutSuccessPage extends Component
 
     public function mount(): void
     {
+        if ($this->restoreOrderFromSignedUrl()) {
+            return;
+        }
+
         $this->cart = CartSession::current();
         if (! $this->cart || ! $this->cart->completedOrder) {
             $this->redirect('/');
@@ -28,6 +32,33 @@ class CheckoutSuccessPage extends Component
         $this->order = $this->cart->completedOrder;
 
         CartSession::forget();
+    }
+
+    protected function restoreOrderFromSignedUrl(): bool
+    {
+        if (! request()->hasValidSignature()) {
+            return false;
+        }
+
+        $orderId = request()->integer('order');
+
+        if (! $orderId) {
+            return false;
+        }
+
+        $order = Order::query()
+            ->whereKey($orderId)
+            ->whereNotNull('placed_at')
+            ->first();
+
+        if (! $order) {
+            return false;
+        }
+
+        $this->order = $order;
+        CartSession::forget();
+
+        return true;
     }
 
     public function render(): View

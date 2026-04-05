@@ -44,7 +44,8 @@ tests/
 │           │   └── payment_intentパラメータ付き決済失敗時に paymentType が card になること
 │           ├── CheckoutSuccessPageTest.php
 │           │   ├── redirects to home when there is no completed order
-│           │   └── sets completed order and clears cart session
+│           │   ├── sets completed order and clears cart session
+│           │   └── 署名付きURLから注文を復元し、再訪しても表示できること
 │           ├── SearchPageTest.php
 │           │   ├── renders search page
 │           │   └── returns paginated search results
@@ -146,7 +147,10 @@ tests/
 │       ├── shows the welcome banner on the home page
 │       └── home page path is root
 └── e2e/
-    └── home.spec.ts  (Playwright/TypeScript)
-        ├── home page responds successfully
-        └── can add a product to cart from product detail page
+    ├── home.spec.ts  (Playwright/TypeScript)
+    │   ├── home page responds successfully
+    │   └── can add a product to cart from product detail page
+    └── checkout.spec.ts  (Playwright/TypeScript)
+        ├── 成功フロー: テストカード 4242 4242 4242 4242 で決済すると注文完了ページが表示されること
+        └── 失敗フロー: 拒否カード 4000 0000 0000 0002 で決済するとインラインエラーが表示されること
 ```

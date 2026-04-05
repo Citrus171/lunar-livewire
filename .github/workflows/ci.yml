@@ -98,6 +98,8 @@ jobs:
       APP_ENV: testing
       DB_CONNECTION: sqlite
       DB_DATABASE: database/database.sqlite
+      STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+      STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
 
     steps:
       - name: Checkout
