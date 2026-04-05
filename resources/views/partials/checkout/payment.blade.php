@@ -8,7 +8,9 @@
     @if ($currentStep >= $step)
         <div class="p-6 space-y-4">
             @if ($paymentError)
-                <div class="p-4 text-sm text-red-700 rounded-lg bg-red-50">
+                <div class="p-4 text-sm text-red-700 rounded-lg bg-red-50"
+                     role="alert"
+                     aria-live="assertive">
                     {{ $paymentError }}
                 </div>
             @endif

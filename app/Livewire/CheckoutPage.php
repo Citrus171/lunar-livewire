@@ -118,7 +118,10 @@ class CheckoutPage extends Component
                 return;
             }
 
-            $this->paymentError = $payment->message;
+            $this->paymentType = 'card';
+            $this->paymentError = filled((string) $payment->message)
+                ? $payment->message
+                : '決済に失敗したので再試行して下さい。';
         }
 
         // Do we have a shipping address?
@@ -254,6 +257,8 @@ class CheckoutPage extends Component
 
     public function checkout(): void
     {
+        $this->paymentError = null;
+
         $payment = Payments::cart($this->cart)->withData([
             'payment_intent_client_secret' => $this->payment_intent_client_secret,
             'payment_intent' => $this->payment_intent,
@@ -265,7 +270,9 @@ class CheckoutPage extends Component
             return;
         }
 
-        $this->paymentError = $payment->message;
+        $this->paymentError = filled((string) $payment->message)
+            ? $payment->message
+            : '決済に失敗したので再試行して下さい。';
     }
 
     /**

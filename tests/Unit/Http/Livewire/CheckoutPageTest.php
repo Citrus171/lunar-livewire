@@ -328,3 +328,57 @@ it('決済が失敗した時、paymentError がビューに表示されること
         ->call('checkout')
         ->assertSee('Your card was declined.');
 });
+
+it('決済失敗メッセージが空の時、フォールバック文言がセットされること', function (): void {
+    $cart = Cart::factory()->create()->calculate();
+    CartSession::shouldReceive('current')->andReturn($cart);
+
+    $mockDriver = Mockery::mock();
+    $mockDriver->shouldReceive('withData')->andReturnSelf();
+    $mockDriver->shouldReceive('authorize')->andReturn(
+        new PaymentAuthorize(success: false, message: null)
+    );
+    Payments::shouldReceive('cart')->andReturn($mockDriver);
+
+    Livewire::test(CheckoutPage::class)
+        ->call('checkout')
+        ->assertSet('paymentError', '決済に失敗したので再試行して下さい。');
+});
+
+it('payment_intentパラメータ付き決済失敗メッセージが空の時、フォールバック文言がセットされること', function (): void {
+    $cart = Cart::factory()->create()->calculate();
+    CartSession::shouldReceive('current')->andReturn($cart);
+
+    $mockDriver = Mockery::mock();
+    $mockDriver->shouldReceive('cart')->andReturnSelf();
+    $mockDriver->shouldReceive('withData')->andReturnSelf();
+    $mockDriver->shouldReceive('authorize')->andReturn(
+        new PaymentAuthorize(success: false, message: null)
+    );
+    Payments::shouldReceive('driver')->with('stripe')->andReturn($mockDriver);
+
+    Livewire::test(CheckoutPage::class, [
+        'payment_intent' => 'pi_test_456',
+        'payment_intent_client_secret' => 'pi_test_456_secret',
+    ])
+        ->assertSet('paymentError', '決済に失敗したので再試行して下さい。');
+});
+
+it('payment_intentパラメータ付き決済失敗時に paymentType が card になること', function (): void {
+    $cart = Cart::factory()->create()->calculate();
+    CartSession::shouldReceive('current')->andReturn($cart);
+
+    $mockDriver = Mockery::mock();
+    $mockDriver->shouldReceive('cart')->andReturnSelf();
+    $mockDriver->shouldReceive('withData')->andReturnSelf();
+    $mockDriver->shouldReceive('authorize')->andReturn(
+        new PaymentAuthorize(success: false, message: 'Your card was declined.')
+    );
+    Payments::shouldReceive('driver')->with('stripe')->andReturn($mockDriver);
+
+    Livewire::test(CheckoutPage::class, [
+        'payment_intent' => 'pi_test_456',
+        'payment_intent_client_secret' => 'pi_test_456_secret',
+    ])
+        ->assertSet('paymentType', 'card');
+});
