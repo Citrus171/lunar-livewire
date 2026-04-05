@@ -146,7 +146,10 @@ tests/
 │       ├── shows the welcome banner on the home page
 │       └── home page path is root
 └── e2e/
-    └── home.spec.ts  (Playwright/TypeScript)
-        ├── home page responds successfully
-        └── can add a product to cart from product detail page
+    ├── home.spec.ts  (Playwright/TypeScript)
+    │   ├── home page responds successfully
+    │   └── can add a product to cart from product detail page
+    └── checkout.spec.ts  (Playwright/TypeScript)
+        ├── 成功フロー: テストカード 4242 4242 4242 4242 で決済すると注文完了ページが表示されること
+        └── 失敗フロー: 拒否カード 4000 0000 0000 0002 で決済するとインラインエラーが表示されること
 ```

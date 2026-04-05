@@ -1,0 +1,145 @@
+import { expect, test, type Page } from '@playwright/test';
+
+/**
+ * カートに商品を追加してチェックアウトページに遷移するヘルパー
+ */
+async function addProductAndGoToCheckout(page: Page): Promise<void> {
+    await page.goto('/');
+
+    let productCardLocator = page.locator('a[href*="/products/"]');
+
+    if (await productCardLocator.count() === 0) {
+        const firstCollectionLink = page.locator('a[href*="/collections/"]').first();
+        await expect(firstCollectionLink).toBeVisible();
+        await firstCollectionLink.click();
+        await expect(page).toHaveURL(/\/collections\//);
+        productCardLocator = page.locator('a[href*="/products/"]');
+    }
+
+    await expect(productCardLocator.first()).toBeVisible();
+    await productCardLocator.first().click();
+    await expect(page).toHaveURL(/\/products\//);
+
+    await page.getByRole('button', { name: 'Add to Cart' }).click();
+
+    await page.goto('/checkout');
+    await expect(page).toHaveURL('/checkout');
+}
+
+/**
+ * 配送先住所フォームを入力してSave Addressするヘルパー
+ */
+async function fillShippingAddress(page: Page): Promise<void> {
+    const section = page.locator('form').filter({ hasText: 'Shipping Details' });
+
+    await section.getByLabel('First name').fill('Test');
+    await section.getByLabel('Last name').fill('User');
+    await section.getByLabel('Contact email').fill('test@example.com');
+    await section.getByLabel('Address line 1').fill('123 Test Street');
+    await section.getByLabel('City').fill('New York');
+    await section.getByLabel('Postcode').fill('10001');
+    await section.locator('select').selectOption({ label: 'United States' });
+
+    await section.getByRole('button', { name: 'Save Address' }).click();
+}
+
+/**
+ * 配送オプションを選択してChoose Shippingするヘルパー
+ */
+async function selectShippingOption(page: Page): Promise<void> {
+    const shippingSection = page.locator('form').filter({ hasText: 'Shipping Options' });
+    await expect(shippingSection).toBeVisible({ timeout: 10000 });
+
+    // 最初のオプションを選択（デフォルト選択済みの場合もある）
+    const firstOption = shippingSection.locator('input[type="radio"]').first();
+    if (await firstOption.count() > 0) {
+        await firstOption.check();
+    }
+
+    await shippingSection.getByRole('button', { name: 'Choose Shipping' }).click();
+}
+
+/**
+ * Stripe Payment Elementのiframe内にカード情報を入力するヘルパー
+ */
+async function fillStripeCard(page: Page, cardNumber: string): Promise<void> {
+    // Stripe Payment Element はiframe内に描画される
+    const stripeFrame = page.frameLocator('iframe[name^="__privateStripeFrame"]').nth(0);
+
+    await stripeFrame.locator('[placeholder="1234 1234 1234 1234"]').waitFor({ timeout: 15000 });
+    await stripeFrame.locator('[placeholder="1234 1234 1234 1234"]').fill(cardNumber);
+    await stripeFrame.locator('[placeholder="MM / YY"]').fill('12/30');
+    await stripeFrame.locator('[placeholder="CVC"]').fill('123');
+}
+
+test('成功フロー: テストカード 4242 4242 4242 4242 で決済すると注文完了ページが表示されること', async ({ page }) => {
+    await addProductAndGoToCheckout(page);
+
+    // ステップ1: 配送先住所を入力（shippingIsBilling=true がデフォルトなので請求先も自動設定）
+    await fillShippingAddress(page);
+
+    // ステップ2: 配送オプションを選択
+    await selectShippingOption(page);
+
+    // ステップ4: 支払いセクションに到達（請求先はステップ3をスキップ）
+    const paymentSection = page.locator('div').filter({ hasText: 'Payment' }).first();
+    await expect(paymentSection).toBeVisible({ timeout: 10000 });
+
+    // カード払いを選択
+    await page.getByRole('button', { name: 'Pay by card' }).click();
+
+    // Stripe Payment Elementが読み込まれるまで待機
+    await expect(page.locator('iframe[name^="__privateStripeFrame"]').nth(0)).toBeAttached({ timeout: 15000 });
+
+    // テストカード入力
+    await fillStripeCard(page, '4242424242424242');
+
+    // 決済ボタンをクリック
+    await page.getByRole('button', { name: 'Make Payment' }).click();
+
+    // Stripe処理後、/checkout/success にリダイレクトされることを確認
+    await expect(page).toHaveURL(/\/checkout\/success/, { timeout: 30000 });
+
+    // 注文参照番号が表示されることを確認
+    await expect(page.getByText('Order Successful!')).toBeVisible();
+    await expect(page.getByText(/Your order reference number is/)).toBeVisible();
+    // 注文参照番号が空でないことを確認
+    const referenceText = page.locator('strong').filter({ hasText: /\S+/ }).first();
+    await expect(referenceText).toBeVisible();
+});
+
+test('失敗フロー: 拒否カード 4000 0000 0000 0002 で決済するとインラインエラーが表示されること', async ({ page }) => {
+    await addProductAndGoToCheckout(page);
+
+    // ステップ1: 配送先住所を入力
+    await fillShippingAddress(page);
+
+    // ステップ2: 配送オプションを選択
+    await selectShippingOption(page);
+
+    // ステップ4: 支払いセクションに到達
+    const paymentSection = page.locator('div').filter({ hasText: 'Payment' }).first();
+    await expect(paymentSection).toBeVisible({ timeout: 10000 });
+
+    // カード払いを選択
+    await page.getByRole('button', { name: 'Pay by card' }).click();
+
+    // Stripe Payment Elementが読み込まれるまで待機
+    await expect(page.locator('iframe[name^="__privateStripeFrame"]').nth(0)).toBeAttached({ timeout: 15000 });
+
+    // 拒否カードを入力
+    await fillStripeCard(page, '4000000000000002');
+
+    // 決済ボタンをクリック
+    await page.getByRole('button', { name: 'Make Payment' }).click();
+
+    // チェックアウトページに留まること（/checkout/successへ遷移しないこと）
+    await expect(page).not.toHaveURL(/\/checkout\/success/, { timeout: 15000 });
+
+    // インラインエラーメッセージが表示されること
+    // Alpine.jsのエラーdiv (x-show="error") またはLivewireのpaymentError表示
+    const stripeErrorDiv = page.locator('[x-show="error"]').filter({ hasText: /\S+/ });
+    const livewireErrorDiv = page.locator('[role="alert"]').filter({ hasText: /\S+/ });
+
+    await expect(stripeErrorDiv.or(livewireErrorDiv)).toBeVisible({ timeout: 15000 });
+});

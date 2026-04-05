@@ -170,3 +170,7 @@
 ### e2e/home.spec.ts
 - [ ] home page responds successfully
 - [ ] can add a product to cart from product detail page
+
+### e2e/checkout.spec.ts
+- [ ] 成功フロー: テストカード 4242 4242 4242 4242 で決済すると注文完了ページが表示されること
+- [ ] 失敗フロー: 拒否カード 4000 0000 0000 0002 で決済するとインラインエラーが表示されること

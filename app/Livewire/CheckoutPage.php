@@ -113,6 +113,7 @@ class CheckoutPage extends Component
             ])->authorize();
 
             if ($payment->success) {
+                session()->put('checkout.completed_order_id', $payment->orderId);
                 $this->redirectRoute('checkout-success.view');
 
                 return;
