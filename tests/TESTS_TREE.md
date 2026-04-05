@@ -113,6 +113,10 @@ tests/
 │   │       ├── 注文詳細ページがログイン済みの時、表示されること
 │   │       ├── 注文詳細の時、注文明細（商品名・数量・単価）が表示されること
 │   │       └── 注文詳細の時、配送先住所が表示されること
+│   ├── StripeConfigTest.php
+│   │   ├── config lunar.stripe が policy=automatic で設定されていること
+│   │   ├── config lunar.payments に stripe ドライバーが登録されていること
+│   │   └── lunar_stripe_payment_intents テーブルが存在すること
 │   └── Http/
 │       └── Livewire/
 │           └── HomeTest.php
