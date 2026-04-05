@@ -65,6 +65,11 @@ class CheckoutPage extends Component
     public string $paymentType = 'cash-in-hand';
 
     /**
+     * The payment error message.
+     */
+    public ?string $paymentError = null;
+
+    /**
      * {@inheritDoc}
      */
     protected $listeners = [
@@ -112,6 +117,11 @@ class CheckoutPage extends Component
 
                 return;
             }
+
+            $this->paymentType = 'card';
+            $this->paymentError = filled((string) $payment->message)
+                ? $payment->message
+                : '決済に失敗したので再試行して下さい。';
         }
 
         // Do we have a shipping address?
@@ -247,6 +257,8 @@ class CheckoutPage extends Component
 
     public function checkout(): void
     {
+        $this->paymentError = null;
+
         $payment = Payments::cart($this->cart)->withData([
             'payment_intent_client_secret' => $this->payment_intent_client_secret,
             'payment_intent' => $this->payment_intent,
@@ -254,7 +266,13 @@ class CheckoutPage extends Component
 
         if ($payment->success) {
             $this->redirectRoute('checkout-success.view');
+
+            return;
         }
+
+        $this->paymentError = filled((string) $payment->message)
+            ? $payment->message
+            : '決済に失敗したので再試行して下さい。';
     }
 
     /**
