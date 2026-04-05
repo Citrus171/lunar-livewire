@@ -7,6 +7,12 @@
 
     @if ($currentStep >= $step)
         <div class="p-6 space-y-4">
+            @if ($paymentError)
+                <div class="p-4 text-sm text-red-700 rounded-lg bg-red-50">
+                    {{ $paymentError }}
+                </div>
+            @endif
+
             <div class="flex gap-4">
                 <button @class([
                     'px-5 py-2 text-sm border font-medium rounded-lg',

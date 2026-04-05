@@ -65,6 +65,11 @@ class CheckoutPage extends Component
     public string $paymentType = 'cash-in-hand';
 
     /**
+     * The payment error message.
+     */
+    public ?string $paymentError = null;
+
+    /**
      * {@inheritDoc}
      */
     protected $listeners = [
@@ -112,6 +117,8 @@ class CheckoutPage extends Component
 
                 return;
             }
+
+            $this->paymentError = $payment->message;
         }
 
         // Do we have a shipping address?
@@ -254,7 +261,11 @@ class CheckoutPage extends Component
 
         if ($payment->success) {
             $this->redirectRoute('checkout-success.view');
+
+            return;
         }
+
+        $this->paymentError = $payment->message;
     }
 
     /**

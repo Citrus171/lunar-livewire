@@ -37,6 +37,9 @@
 - [ ] 決済が失敗した時、チェックアウト完了ページにリダイレクトされないこと
 - [ ] payment_intentパラメータ付きでStripe決済が成功した時、成功ページにリダイレクトされること
 - [ ] payment_intentパラメータ付きでStripe決済が失敗した時、成功ページにリダイレクトされないこと
+- [ ] 決済が失敗した時、paymentError にエラーメッセージがセットされること
+- [ ] payment_intentパラメータ付きで決済が失敗した時、paymentError にエラーメッセージがセットされること
+- [ ] 決済が失敗した時、paymentError がビューに表示されること
 
 ### Http/Livewire/CheckoutSuccessPageTest
 - [ ] redirects to home when there is no completed order
