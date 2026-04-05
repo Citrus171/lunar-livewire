@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Schema;
+
 it('config lunar.stripe が policy=automatic で設定されていること', function (): void {
     expect(config('lunar.stripe'))->not->toBeNull()
         ->and(config('lunar.stripe.policy'))->toBe('automatic');
@@ -13,6 +15,6 @@ it('config lunar.payments に stripe ドライバーが登録されているこ�
 });
 
 it('lunar_stripe_payment_intents テーブルが存在すること', function (): void {
-    expect(\Illuminate\Support\Facades\Schema::hasTable('lunar_stripe_payment_intents'))->toBeTrue();
+    expect(Schema::hasTable('lunar_stripe_payment_intents'))->toBeTrue();
 });
 
